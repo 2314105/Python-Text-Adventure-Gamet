@@ -25,76 +25,58 @@ class CCharacter:
         print(f"\nName: {self.mName}"
               f"\nHP: {self.mHealth}"
               f"\nAttack: {self.mDamage}"
-              f"\nDeffence: {self.mDefence}")
-        
-#rooms class
+              f"\nDeffence: {self.mDefence}")    
+# rooms class
 class CRoom:
-    def __init__(self, location, description, direction, challange, item, hint):
+    def __init__(self, location, description, directions, challenge, item):
         self.mLocation = location
         self.mDescription = description
-        self.mDirection = direction
-        self.mChallange = challange
+        self.mDirections = directions
+        self.mChallenge = challenge
         self.mItem = item
-        self.mHint = hint
 
     def displayLocationDescription(self):
-        print(f"\nLocation: {self.mLocation}\n{self.mDescription}")
+        print(f"\nLocation: {self.mLocation}\n\n{self.mDescription}")
 
-    rooms = {
-    "enchantedForest": {
-        "location": "Enchanted Forest",
-        "description": "Surrounded by tall, dark trees, you stand in a mystical forest. Blue leaves gently descend"
-        "\nfrom the sky, casting an ethereal glow upon the surroundings. The air is filled with"
-        "\nenchantment as the magical foliage paints the scene with its serene illumination.",
-        "west": "frozenStoneGarden",
-        "item": ["Blue Rune"],
-        "challenge":{
-            "completed": False}},
-    "frozenStoneGarden": {
-        "location": "Frozen Stone Garden",
-        "description": "In this frigid landscape, an intense cold envelops everything. Frozen statues dot the"
-        "\nsurroundings, revealing upon closer examination that they are not sculptures but the chilling"
-        "\nfate of people and creatures caught in an icy stasis. The profound stillness of this frozen"
-        "\nrealm conceals the silent stories of those who succumbed to the relentless grip of cold.",
-        "north": "floodedAlcemyRoom",
-        "east": "enchantedForest",
-        "south": "magicalLibariy",
-        "west": "hiddenRituralSite",
-        "item": ["Red Rune"],
-        "challenge":{
-            "completed": False    }},
-    "floodedAlcemyRoom": {
-        "location": "Flooded Alcemy Room",
-        "description": "Vivid hues of moss and slime coat the walls, creating a surreal tapestry of colors. The floor,"
-        "\nobscured by an unseen flood, bears witness to a chemical concoction that has transformed the"
-        "\nenvironment into a mesmerizing yet mysterious spectacle. The amalgamation of diverse chemicals"
-        "\nbeneath contributes to a uniquely vibrant and enigmatic atmosphere within these walls.",
-        "south": "frozenStoneGarden",
-        "item": ["Green Rune"],
-        "challenge":{
-            "completed": False}},
-    "magicalLibariy": {
-        "location": "Magical Libariy",
-        "description": "A whirlwind of books fills the air, with each tome rising from a pile on the ground,"
-        "\nfloating gracefully to find its place on an infinite bookcase. Yet, the cycle repeats as"
-        "\nthe books descend, creating a mesmerizing and perpetual dance of literature. The never-ending"
-        "\nspectacle captures the essence of an unending cycle, where knowledge and stories take flight"
-        "\nonly to return and continue their enchanting journey.",
-        "north": "frozenStoneGarden",
-        "item": ["Yellow rune"],
-        "challenge":{
-            "completed": False}},
-    "hiddenRituralSite": {
-        "location": "Hidden Ritural Site",
-        "description": "As you tread through the secretive ceremonial grounds, an unexpected revelation unfolds—the"
-        "\nimposing Boss emerges from the shadows. This pivotal encounter marks a turning point,"
-        "\npromising both challenges and profound revelations within the mysterious heart of this"
-        "\nconcealed sanctuary.",
-        "east": "frozenStoneGarden",
-        "item": [],
-        "challenge":{
-            "completed": False}}}
-
+    def navigation(self, direction):
+        if direction in self.mDirections:
+            nextRoom = self.mDirections[direction]
+            return rooms[nextRoom]
+        else:
+            print("you run into a wall... there is no room in that direction.")
+            return self
+# Define rooms using the CRoom class
+rooms = {
+    "enchantedForest": CRoom(
+        location = "Enchanted Forest",
+        description ="Surrounded by tall, dark trees, you stand in a mystical forest. Blue leaves gently descend\nfrom the sky, casting an ethereal glow upon the surroundings. The air is filled with\nenchantment as the magical foliage paints the scene with its serene illumination.",
+        directions = {"west": "frozenStoneGarden"},
+        challenge = {"completed": False},
+        item = ["Enchanted Rune"]),
+    "frozenStoneGarden": CRoom(
+        location = "Frozen Stone Garden",
+        description = "In this frigid landscape, an intense cold envelops everything. Frozen statues dot the\nsurroundings, revealing upon closer examination that they are not sculptures but the chilling\nfate of people and creatures caught in an icy stasis. The profound stillness of this frozen\nrealm conceals the silent stories of those who succumbed to the relentless grip of cold.",
+        directions = {"north": "floodedAlcemyRoom", "east": "enchantedForest", "south": "magicalLibariy", "west": "hiddenRituralSite"},
+        challenge = {"completed": False},
+        item = ["Ice Rune"]),
+    "floodedAlcemyRoom": CRoom(
+        location = "Flooded Alcemy Room",
+        description = "Vivid hues of moss and slime coat the walls, creating a surreal tapestry of colors. The floor,\nobscured by an unseen flood, bears witness to a chemical concoction that has transformed the\nenvironment into a mesmerizing yet mysterious spectacle. The amalgamation of diverse chemicals\nbeneath contributes to a uniquely vibrant and enigmatic atmosphere within these walls.",
+        directions = {"south": "frozenStoneGarden"},
+        challenge = {"completed": False},
+        item = ["Liqued Rune"]),
+    "magicalLibariy": CRoom(
+        location = "Magical Libariy",
+        description = "A whirlwind of books fills the air, with each tome rising from a pile on the ground,\nfloating gracefully to find its place on an infinite bookcase. Yet, the cycle repeats as\nthe books descend, creating a mesmerizing and perpetual dance of literature. The never-ending\nspectacle captures the essence of an unending cycle, where knowledge and stories take flight\nonly to return and continue their enchanting journey.",
+        directions = {"north": "frozenStoneGarden"},
+        challenge = {"completed": False},
+        item = ["Magic Rune"]),
+    "hiddenRituralSite": CRoom(
+        location = "Hidden Ritural Site",
+        description = "As you tread through the secretive ceremonial grounds, an unexpected revelation unfolds—the\nimposing Boss emerges from the shadows. This pivotal encounter marks a turning point,\npromising both challenges and profound revelations within the mysterious heart of this\nconcealed sanctuary.",
+        directions = {"east": "frozenStoneGarden"},
+        challenge = {"completed": False},
+        item = ["Green Rune"])}
 #border for UI
 border = ("\n<------------------------------------------------------------------------------------------>\n")      
 # Clears screen
@@ -173,9 +155,14 @@ def loot():
     lootChance = random.randint(0,2)
     lootDropped = loot[lootChance]
     return lootDropped
-#Uses the enemy magic as score
+# Uses the enemy magic or riddle magic as score
 def score(enemy, riddle, currentScore):
-    updatedScore =currentScore + enemy.mMagic or riddle.mMagic
+    if enemy:
+        updatedScore = currentScore + enemy.mMagic
+    elif riddle:
+        updatedScore = currentScore + riddle.mMagic
+    else:
+        updatedScore = currentScore
     return updatedScore
 #Starting Main menu
 def menu():
@@ -251,7 +238,7 @@ def combat(playerCharacter, currentScore):
                     gameOver(playerCharacter, currentScore)
                 else:
                     lootDropped = loot()
-                    currentScore = score(enemy, currentScore)
+                    currentScore = score(enemy, None, currentScore)
                     print(f"you have defeated the {enemy.mName}, it looks like it dropped somthing \nLoot: {lootDropped}\nScore: {currentScore}")
                     break
             else:
@@ -272,7 +259,7 @@ def combat(playerCharacter, currentScore):
                     gameOver(playerCharacter, currentScore)
                 else:
                     lootDropped = loot()
-                    currentScore = score(enemy, currentScore)
+                    currentScore = score(enemy,None, currentScore)
                     print(f"you have defeated the {enemy.mName}, it looks like it dropped somthing \nLoot: {lootDropped}\nScore: {currentScore}")
                     break
             else:
@@ -296,15 +283,17 @@ def combat(playerCharacter, currentScore):
             print(f"{command} not recognised")
 
 def challenge(currentRoom, playerCharacter, currentScore):
-    if "challenge" in currentRoom and not currentRoom["challenge"]["completed"]:
+    if currentRoom.mChallenge and not currentRoom.mChallenge["completed"]:
+        print(f"A challenge in {currentRoom.mLocation} awaits you.")
         challengeType = random.choice(["riddle", "combat"])
         clear()
         if challengeType == "riddle": 
             riddle(playerCharacter, currentScore)
         elif challengeType == "combat":
             combat(playerCharacter, currentScore)
-        currentRoom["challenge"]["completed"] = True
-
+        currentRoom.mChallenge["completed"] = True
+    else:
+        print(f"The challenge in {currentRoom.mLocation} has already been completed.")
 
 def randomRiddleSelector():
     randomRiddle = random.randint(1,4)
@@ -329,7 +318,7 @@ def riddle(playerCharacter, currentScore):
         pressEnterToContinue()
         command = input("What is your anwser?")
         if command in riddle.mHero:
-            currentScore = score(riddle, currentScore)
+            currentScore = score(None, riddle, currentScore)
             print(f"Well done {playerCharacter.mName} you guessed correctly")
             break
 
@@ -369,42 +358,25 @@ def introduction():
         "\nand embark on your quest to secure victory and glory.")
     pressEnterToContinue()
     
-def main(currentRoom, currentScore):
-    directions =["north", "south", "east", "west"]
-    currentRoom = rooms["enchantedForest"]
-    menu()
+def main():
+    currentScore = 0
     playerCharacter = characterCreator()
-    introduction()
-# game loop
+    currentRoom = rooms["enchantedForest"]
+    clear()
+    currentRoom.displayLocationDescription()
     while True:
-        displayRoomInformation(currentRoom)
-        command = input('\nWhat do you do?').lower()
-        # movement
-        if command in directions:
-            if command in currentRoom:
-                nextRoom = currentRoom[command]
-                currentRoom = rooms[nextRoom]
-                challenge(playerCharacter, currentScore, currentRoom)
-            else:
-                print("You can't move in that direction.")
-                pressEnterToContinue()
-        #Help
-        elif command == "h" or command == "help":
+        userInput = input(f"\nEnter one of the following options:\n\nChallenge: challenge\n\nChange room: {currentRoom.mDirections}\n\nHelp: help\n\nExit: exit\n\n>").lower()
+        if userInput == "help":
             help()
-        
-        # quit game
-        elif command == "q" or command == "quit":
-            menu()
+        elif userInput == "challenge":
+            challenge(currentRoom, playerCharacter, currentScore)
+        elif userInput == 'exit':
             break
-        
-        elif command == "s" or command == "stats":
-            playerCharacter.playerStats()
-            pressEnterToContinue()
-        
-        # gather objects
-        
-        else:
-            print("I don't understand that command.")
+
+        currentRoom = currentRoom.navigation(userInput)  # Corrected method name
+        currentRoom.displayLocationDescription()
+
 if __name__ == "__main__":
-    main("enchantedForest", 0)
+    main()
+
     
