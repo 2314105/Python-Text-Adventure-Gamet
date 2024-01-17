@@ -28,6 +28,7 @@ class CCharacter:
         print(f"{item} added to inventory.")
     #Uses item from inventory, adds it to stats and removes it from list
     def useItem(self):
+        clear()
         command = input(f"\n{border}\nWhat item would you like to use\n{border}\nInventory: {self.mInventory}\n{border}\n>").lower()
         if command in self.mInventory:
             if command == "health potion":
@@ -37,7 +38,7 @@ class CCharacter:
             elif command == "magic damage potion":
                 self.mMagic += 12
                 self.mInventory.remove("magic damage potion")
-                print("Your magic damage has increased by 12 points,")
+                print("Your magic damage has increased by 12 points")
             elif command == "physical damage potion":
                 self.mDamage += 14
                 self.mInventory.remove("physical damage potion")
@@ -45,7 +46,7 @@ class CCharacter:
             elif command == "defence potion":
                 self.mDefence += 10
                 self.mInventory.remove("defence potion")
-                print("Your Defence has increased by 10 points, curren health")
+                print("Your Defence has increased by 10 points")
             elif command == "booster potion":
                 self.mMagic += 5
                 self.mDefence += 5
@@ -289,7 +290,7 @@ def combat(playerCharacter, currentScore):
                     break
             else:
                 print(f"your miss the {enemy.mName} leaving a opening for a counter attack")
-                playerCharacter.mHealth - enemy.mDamage
+                playerCharacter.mHealth -= enemy.mDamage
                 print(f"{enemy.mName} landed a full damage hit,ignoring your deffence; current health is {playerCharacter.mHealth}")
                 gameOver(playerCharacter, currentScore)
         #magic damage change to a function
