@@ -2,24 +2,64 @@
 import os
 import random
 import time
-
 #Character class
 class CCharacter:
-    def __init__(self, name, hero, health, magic, damage, defence):
+    def __init__(self, name, hero, health, magic, damage, defence, inventory):
         self.mName = name
         self.mHero = hero
         self.mHealth = health
         self.mMagic = magic
         self.mDamage = damage
         self.mDefence = defence
+        self.mInventory = inventory
     #Displays players stats
     def playerStats(self):
-        print(f"\nName: {self.mName}"
+        clear()
+        print(f"{border}\nName: {self.mName}\n{border}"
               f"\nClass: {self.mHero}"
               f"\nHP: {self.mHealth}"
               f"\nMP: {self.mMagic}"
               f"\nAttack: {self.mDamage}"
-              f"\nDeffence: {self.mDefence}")
+              f"\nDeffence: {self.mDefence}\n{border}"
+              f"\nInventory : {self.mInventory}\n{border}")
+    #Adds items to inventory
+    def addToInventory(self, item):
+        self.mInventory.append(item)
+        print(f"{item} added to inventory.")
+    #Uses item from inventory, adds it to stats and removes it from list
+    def useItem(self):
+        command = input(f"\n{border}\nWhat item would you like to use\n{border}\nInventory: {self.mInventory}\n{border}\n>").lower()
+        if command in self.mInventory:
+            if command == "health potion":
+                self.mHealth += 30
+                self.mInventory.remove("health potion")
+                print("Your health has increased by 30 points")
+            elif command == "magic damage potion":
+                self.mMagic += 12
+                self.mInventory.remove("magic damage potion")
+                print("Your magic damage has increased by 12 points,")
+            elif command == "physical damage potion":
+                self.mDamage += 14
+                self.mInventory.remove("physical damage potion")
+                print("Your physical damage has increased by 14 points")
+            elif command == "defence potion":
+                self.mDefence += 10
+                self.mInventory.remove("defence potion")
+                print("Your Defence has increased by 10 points, curren health")
+            elif command == "booster potion":
+                self.mMagic += 5
+                self.mDefence += 5
+                self.mDamage += 5
+                self.mHealth += 5
+                self.mInventory.remove("booster potion")
+                print(f"All Your stats have increased by 5")
+            else:
+                print(f"{command} not recognised.")
+                pressEnterToContinue()
+        else:
+            print(f"{command} is not in your inventory")
+            pressEnterToContinue()
+
     #Displays enemys stats
     def enemyStats(self):
         print(f"\nName: {self.mName}"
@@ -36,14 +76,18 @@ class CRoom:
         self.mItem = item
 
     def displayLocationDescription(self):
-        print(f"\nLocation: {self.mLocation}\n\n{self.mDescription}")
+        print(f"\n{border}\nLocation: {self.mLocation}\n{border}\n{self.mDescription}\n{border}")
 
     def navigation(self, direction):
-        if direction in self.mDirections:
+        if self.mChallenge and not self.mChallenge["completed"]:
+            print("You must complete the challange before moving to the next room")
+            pressEnterToContinue()
+            return self
+        elif direction in self.mDirections:
             nextRoom = self.mDirections[direction]
             return rooms[nextRoom]
         else:
-            print("you run into a wall... there is no room in that direction.")
+            pressEnterToContinue()
             return self
 # Define rooms using the CRoom class
 rooms = {
@@ -103,9 +147,9 @@ def gameOver(playerCharacter, score):
         print("You lose Sucker!!!")
 #Gets players name and makes sure its not too long or too short
 def characterName():
-    clear()
     while True:
-        name = input("Tell me Hero, What is thy Name\n\n>").capitalize()
+        clear()
+        name = input(f"{border}\nTell me Hero, What is thy Name?\n{border}\n\n>").capitalize()
         if 3 <= len(name) <= 10:
             confirm_name = yeaOrNay(f"{border} Is {name} your Name Yae/Nay: \n\n")
             if confirm_name:
@@ -119,41 +163,41 @@ def characterCreator():
         while True:
             clear()
             while True:
-                command = input(f"{name}, What type of hero are you?\n1. warrior\n\n2. mage\n\n3. rogue").lower()
+                command = input(f"{border}\n{name}, What type of hero are you?\n{border}\n1. warrior\n\n2. mage\n\n3. rogue").lower()
                 if command in ["warrior", "one", "1"]:
-                    character = CCharacter(name, "Warrior", 100, 6, 18, 6)
+                    character = CCharacter(name, "Warrior", 100, 6, 18, 6,["defence potion"])
                     break
                 elif command in ["mage", "two", "2"]:
-                    character = CCharacter(name, "Mage", 80, 18, 7, 4)
+                    character = CCharacter(name, "Mage", 80, 18, 7, 4, ["magic potion"])
                     break
                 elif command in ["rogue", "three", "3"]:
-                    character = CCharacter(name, "Rogue", 60, 20, 20, 2)
+                    character = CCharacter(name, "Rogue", 60, 20, 20, 2, ["damage potion"])
                     break
-
             character.playerStats()
-            command = yeaOrNay(f"{border} Is this your class Yae/Nay: \n\n")
+            command = yeaOrNay("Is this your class Yae/Nay: \n\n>")
             if command:
                 return character
 #Random enemy generator
 def randomEnemySelector():
     randomEnemy = random.randint(1,4)
     if randomEnemy == 1:
-        enemy = CCharacter("Gobblin", None, 20, 100, 12, 10)
+        enemy = CCharacter("Gobblin", None, 20, 100, 12, 10, None)
         return enemy
     elif randomEnemy == 2:
-        enemy = CCharacter("Troll", None, 30, 120, 18, 20)
+        enemy = CCharacter("Troll", None, 30, 120, 18, 20, None)
         return enemy
     elif randomEnemy == 3:
-        enemy = CCharacter("Orc", None, 40, 140, 16, 10)
+        enemy = CCharacter("Orc", None, 40, 140, 16, 10, None)
         return enemy
     elif randomEnemy == 4:
-        enemy = CCharacter("Manticore", None, 50, 200, 28, 28)
+        enemy = CCharacter("Manticore", None, 50, 200, 28, 28, None)
         return enemy
 #Random loot drops
-def loot():
-    loot = ["Health potion", "Damage Potion", "Defence potion"]
+def loot(playerCharacter):
+    loot = ["health potion", "physical damage potion", "defence potion", "magic damage potion", "booster potion"]
     lootChance = random.randint(0,2)
     lootDropped = loot[lootChance]
+    playerCharacter.addToInventory(lootDropped)
     return lootDropped
 # Uses the enemy magic or riddle magic as score
 def score(enemy, riddle, currentScore):
@@ -224,6 +268,7 @@ def combat(playerCharacter, currentScore):
     print(f"you see a {enemy.mName}\nYou have 3 options: ")
     while enemy.mHealth > 0 and playerCharacter.mHealth > 0:
         pressEnterToContinue()
+        print(f"{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}")
         command = input(f"\n1.Physical attack\n\n2.Magic attack\n\n3.Run away")
         #physical damage change to a function
         if command in ["physical attack", "one", "1"]:
@@ -237,9 +282,10 @@ def combat(playerCharacter, currentScore):
                     print(f"{enemy.mName} takes a hits you, you now have {playerCharacter.mHealth}")
                     gameOver(playerCharacter, currentScore)
                 else:
-                    lootDropped = loot()
+                    lootDropped = loot(playerCharacter)
                     currentScore = score(enemy, None, currentScore)
                     print(f"you have defeated the {enemy.mName}, it looks like it dropped somthing \nLoot: {lootDropped}\nScore: {currentScore}")
+                    pressEnterToContinue()
                     break
             else:
                 print(f"your miss the {enemy.mName} leaving a opening for a counter attack")
@@ -258,9 +304,11 @@ def combat(playerCharacter, currentScore):
                     print(f"{enemy.mName} takes a hits you, you now have {playerCharacter.mHealth}")
                     gameOver(playerCharacter, currentScore)
                 else:
-                    lootDropped = loot()
+                    lootDropped = loot(playerCharacter)
                     currentScore = score(enemy,None, currentScore)
                     print(f"you have defeated the {enemy.mName}, it looks like it dropped somthing \nLoot: {lootDropped}\nScore: {currentScore}")
+                    pressEnterToContinue()
+
                     break
             else:
                 print(f"your miss the {enemy.mName} leaving a opening for a counter attack")
@@ -282,7 +330,7 @@ def combat(playerCharacter, currentScore):
         else:
             print(f"{command} not recognised")
 
-def challenge(currentRoom, playerCharacter, currentScore):
+def challenge(currentRoom, playerCharacter, currentScore,):
     if currentRoom.mChallenge and not currentRoom.mChallenge["completed"]:
         print(f"A challenge in {currentRoom.mLocation} awaits you.")
         challengeType = random.choice(["riddle", "combat"])
@@ -291,6 +339,7 @@ def challenge(currentRoom, playerCharacter, currentScore):
             riddle(playerCharacter, currentScore)
         elif challengeType == "combat":
             combat(playerCharacter, currentScore)
+        playerCharacter.addToInventory(currentRoom.mItem)
         currentRoom.mChallenge["completed"] = True
     else:
         print(f"The challenge in {currentRoom.mLocation} has already been completed.")
@@ -298,16 +347,16 @@ def challenge(currentRoom, playerCharacter, currentScore):
 def randomRiddleSelector():
     randomRiddle = random.randint(1,4)
     if randomRiddle == 1:
-        riddle = CCharacter("Riddle 1 question", ["Riddle 1 anwser", "1"], None, 120,"riddle 1 hint", None)
+        riddle = CCharacter("Riddle 1 question", ["Riddle 1 anwser", "1"], None, 120,"riddle 1 hint", None, None)
         return riddle
     elif randomRiddle == 2:
-        riddle = CCharacter("Riddle 2 question", ["Riddle 2 anwser", "2"], None, 130,"riddle 2 hint", None)
+        riddle = CCharacter("Riddle 2 question", ["Riddle 2 anwser", "2"], None, 130,"riddle 2 hint", None, None)
         return riddle
     elif randomRiddle == 3:
-        riddle = CCharacter("Riddle 3 question", ["Riddle 3 anwser", "3"], None, 140,"riddle 3 hint", None)
+        riddle = CCharacter("Riddle 3 question", ["Riddle 3 anwser", "3"], None, 140,"riddle 3 hint", None, None)
         return riddle
     elif randomRiddle == 4:
-        riddle = CCharacter("Riddle 4 question", ["Riddle 4 anwser", "4"], None, 200,"riddle 4 hint", None)
+        riddle = CCharacter("Riddle 4 question", ["Riddle 4 anwser", "4"], None, 200,"riddle 4 hint", None, None)
         return riddle
 
 def riddle(playerCharacter, currentScore):
@@ -360,22 +409,26 @@ def introduction():
     
 def main():
     currentScore = 0
+    menu()
     playerCharacter = characterCreator()
     currentRoom = rooms["enchantedForest"]
-    clear()
-    currentRoom.displayLocationDescription()
     while True:
-        userInput = input(f"\nEnter one of the following options:\n\nChallenge: challenge\n\nChange room: {currentRoom.mDirections}\n\nHelp: help\n\nExit: exit\n\n>").lower()
+        clear()
+        currentRoom.displayLocationDescription()
+        userInput = input(f"\nEnter one of the following commands:\n\nChallenge: challenge\n\nChange room: {currentRoom.mDirections}\n\nHelp: help\n\nExit: exit\n\n>").lower()
         if userInput == "help":
             help()
         elif userInput == "challenge":
             challenge(currentRoom, playerCharacter, currentScore)
+        elif userInput == "stats":
+            playerCharacter.playerStats()
+        elif userInput == "use item":
+            playerCharacter.useItem()
         elif userInput == 'exit':
+            menu()
             break
 
-        currentRoom = currentRoom.navigation(userInput)  # Corrected method name
-        currentRoom.displayLocationDescription()
-
+        currentRoom = currentRoom.navigation(userInput)
 if __name__ == "__main__":
     main()
 
