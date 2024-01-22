@@ -283,6 +283,15 @@ def help():
           "\nType: attack, a or just pressing enter will allow you to attack\n\nrunning away will give the enemy a chance to to get a hit in")
     pressEnterToContinue()
 
+def youWin(playerCharacter):
+    clear()
+    print(f"\n{border}\nCongratulations {playerCharacter.mName} You've WON!!!\n{border}\n Here is your over all Score {playerCharacter.mScore}\n\n would you like to play again?\n\n")
+    command = yeaOrNay("Yae/Nay: \n\n>")
+    if command:
+        menu()
+    else:
+        quitGame()
+
 def displayRoomInformation(currentRoom):
     clear()
     print(f"{border}"
@@ -313,8 +322,11 @@ def combat(playerCharacter, currentRoom):
                 print(f"succesful strike, enemy Health is now{enemy.mHealth}")
                 if enemy.mHealth > 0:
                     playerCharacter.mHealth -= round(enemy.mDamage*playerCharacter.mDefence)
-                    print(f"{enemy.mName} takes a hits you, you now have {playerCharacter.mHealth}")
+                    print(f"{enemy.mName} takes a swing and hits you, you now have {playerCharacter.mHealth}")
                     gameOver(playerCharacter)
+                elif enemy.mHealth <= 0 and enemy.mName == "boss":
+                    youWin(playerCharacter)
+                    break
                 else:
                     lootDropped = loot(playerCharacter)
                     playerCharacter.mScore += enemy.mScore
