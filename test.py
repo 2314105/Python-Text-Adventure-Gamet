@@ -52,9 +52,9 @@ class CCharacter:
               f"\nDeffence: {self.mDefence}")
         
 #Displays gameover screen based on players health
-def gameOver(playerCharacter, score):
+def gameOver(playerCharacter, mScore):
     if playerCharacter.mHealth < 1:
-        print(f"Score = {score}")
+        print(f"Score = {mScore}")
         print("You lose Sucker!!!")
 
 #
@@ -111,7 +111,7 @@ def loot():
     lootDropped = loot[lootChance]
     return lootDropped
 
-def score(enemy, currentScore):
+def mScore(enemy, currentScore):
     updatedScore =currentScore + enemy.mMagic
     return updatedScore
 
@@ -134,7 +134,7 @@ def combat(playerCharacter, currentScore):
                     gameOver(playerCharacter, currentScore)
                 else:
                     lootDropped = loot()
-                    currentScore = score(enemy, currentScore)
+                    currentScore = mScore(enemy, currentScore)
                     print(f"you have defeated the {enemy.mName}, it looks like it dropped somthing \nLoot: {lootDropped}\nScore: {currentScore}")
                     break
             else:
@@ -155,7 +155,7 @@ def combat(playerCharacter, currentScore):
                     gameOver(playerCharacter, currentScore)
                 else:
                     lootDropped = loot()
-                    currentScore = score(enemy, currentScore)
+                    currentScore = mScore(enemy, currentScore)
                     print(f"you have defeated the {enemy.mName}, it looks like it dropped somthing \nLoot: {lootDropped}\nScore: {currentScore}")
                     break
             else:
@@ -179,9 +179,9 @@ def combat(playerCharacter, currentScore):
             print(f"{command} not recognised")
 
 def main():
-        score = 0
+        mScore = 0
         playerCharacter = characterCreator()
-        combat(playerCharacter, score)
+        combat(playerCharacter, mScore)
 if __name__ == "__main__":
     main()
 
