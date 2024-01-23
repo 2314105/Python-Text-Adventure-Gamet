@@ -183,7 +183,7 @@ def gameOver(playerCharacter):
         print("You lose Sucker!!!\n\nTry Again?\n\n")
         command = yeaOrNay("Yae/Nay: \n\n>")
         if command:
-            menu()
+            True
         else:
             quitGame()
 #Gets players name and makes sure its not too long or too short
@@ -413,30 +413,31 @@ def riddle(playerCharacter):
     
 # Modify the main function to loop based on the menu result
 def main():
-    while menu():  # Continue looping as long as the player wants to start a new game
-        playerCharacter = characterCreator()
-        introduction()
-        currentRoom = rooms["enchantedForest"]
-        while playerCharacter.mHealth >= 0:
-            clear()
-            currentRoom.displayLocationDescription()
-            userInput = input(f"\nType one of the following commands:\n\nChange room: {currentRoom.mDirections}\n\nC: challenge\n\nS: Stats\n\nU: Use item\n\nH: Help\n\nE: Exit\n\n>").lower()
-            if userInput in ["help", "h"]:
-                help()
-            elif userInput in ["challenge", "c"]:
-                challenge(currentRoom, playerCharacter)
-            elif userInput in ["stats", "s"]:
-                playerCharacter.playerStats()
-                pressEnterToContinue()
-            elif userInput in ["use item", "u"]:
-                playerCharacter.useItem()
-            elif userInput in currentRoom.mDirections:
-                currentRoom = currentRoom.navigation(userInput, playerCharacter)
-            elif userInput in ["exit", "e"]:
-                yeaOrNay("Are you Sure you want to  exit? (Y/N)")
-                break  # Exit the game loop
-        gameOver(playerCharacter)
-
+    gameRunning = True
+    while gameRunning:
+        while menu():
+            playerCharacter = characterCreator()
+            introduction()
+            currentRoom = rooms["enchantedForest"]
+            while playerCharacter.mHealth >= 0:
+                clear()
+                currentRoom.displayLocationDescription()
+                userInput = input(f"\nType one of the following commands:\n\nChange room: {currentRoom.mDirections}\n\nL: Look\n\nS: Stats\n\nU: Use item\n\nH: Help\n\nE: Exit\n\n>").lower()
+                if userInput in ["help", "h"]:
+                    help()
+                elif userInput in ["look", "l"]:
+                    challenge(currentRoom, playerCharacter)
+                elif userInput in ["stats", "s"]:
+                    playerCharacter.playerStats()
+                    pressEnterToContinue()
+                elif userInput in ["use item", "u"]:
+                    playerCharacter.useItem()
+                elif userInput in currentRoom.mDirections:
+                    currentRoom = currentRoom.navigation(userInput, playerCharacter)
+                elif userInput in ["exit", "e"]:
+                    yeaOrNay("Are you Sure you want to  exit? (Y/N)")
+                    break
+        gameRunning = gameOver(playerCharacter)
 if __name__ == "__main__":
     main()
 
