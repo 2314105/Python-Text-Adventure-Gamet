@@ -4,7 +4,7 @@ import random
 import time
 #Character class
 class CCharacter:
-    def __init__(self, name, hero, health, keys, damage, defence, inventory, score):
+    def __init__(self, name, hero, health, key, damage, defence, inventory, score):
         self.mName = name
         self.mHero = hero
         self.mHealth = health
@@ -58,7 +58,6 @@ class CCharacter:
         else:
             print(f"{command} not recognised.")
             pressEnterToContinue()
- 
 # Rooms class
 class CRoom:
     def __init__(self, location, description, directions, challenge, item):
@@ -74,13 +73,14 @@ class CRoom:
             print(f"Challenge completed{border}")
         else:
             print(f"Challenge not completed{border}")
-            
+    # Navigate rooms
     def navigation(self, direction, playerCharacter):
-    # Checks if the room's challenge has been completed
+    # Checks if the rooms challenge has been completed
         if self.mChallenge and not self.mChallenge["completed"]:
             print("You must complete the challenge before moving to the next room")
             pressEnterToContinue()
             return self
+        # Checks of the next room is the boss room and if you have all 4 keys
         elif direction in self.mDirections:
             nextRoomName = self.mDirections[direction]
             nextRoom = rooms[nextRoomName]
@@ -162,11 +162,11 @@ def introduction():
 # Clears screen
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
-#Prompts the user to input to clear the screen
+# Prompts the user to input to clear the screen
 def pressEnterToContinue():
     input("press enter to continue ...")
     clear()
-#Yes or no question
+# Yes or no question
 def yeaOrNay(prompt):
     while True:
         userInput = input(prompt).lower()
@@ -176,7 +176,7 @@ def yeaOrNay(prompt):
             return False
         else:
             print("Invalid input. Please enter Yea or Nay.")
-#Displays game over screen
+# Displays game over screen
 def gameOver(playerCharacter):
     if playerCharacter.mHealth < 1:
         print(f"Score = {playerCharacter.mScore}")
@@ -186,7 +186,7 @@ def gameOver(playerCharacter):
             True
         else:
             quitGame()
-#Gets players name and makes sure its not too long or too short
+# Gets players name and makes sure its not too long or too short
 def characterName():
     while True:
         clear()
@@ -195,7 +195,7 @@ def characterName():
             confirmName = yeaOrNay(f"{border} Is {name} your Name Yae/Nay: \n\n")
             if confirmName:
                 return name
-#Lets player choose what character to play as
+# Lets player choose what character to play as
 def characterCreator():
         name = characterName()
         while True:
@@ -222,9 +222,10 @@ def characterCreator():
             command = yeaOrNay("Is this your class Yae/Nay: \n\n>")
             if command:
                 return character
-#Random enemy generator
+# Random enemy generator
 def randomEnemySelector(currentRoom):
     randomEnemy = random.randint(1,4)
+    # Checks if boss room then returns boss else you get a random enemy
     if currentRoom.mLocation == "Hidden Ritural Site":
         enemy = CCharacter("boss", None, 100, None, 30, 0.3, None, 500)
         return enemy
@@ -240,14 +241,14 @@ def randomEnemySelector(currentRoom):
     elif randomEnemy == 4:
         enemy = CCharacter("Manticore", None, 70, None, 20, 0.28, None, 200)
         return enemy
-#Random loot drops
+# Random loot drops
 def loot(playerCharacter):
     loot = ["health potion", "damage potion", "protection potion", "booster potion"]
     lootChance = random.randint(0,3)
     lootDropped = loot[lootChance]
     playerCharacter.addToInventory(lootDropped)
     return lootDropped
-#Starting Main menu
+# Starting Main menu
 def menu():
     while True:
         clear()
@@ -267,16 +268,16 @@ def menu():
         elif command == "4" or command == "quit" or command == "four" or command == "q":
             quitGame()
             return False
-#Allows the player to load a game save
+# Allows the player to load a game save
 def loadGame():
     clear()
     print("loagGame")
-#Allows the player to exit the game
+# Allows the player to exit the game
 def quitGame():
     clear()
     print("Farewell, brave adventurer! Until we meet again.")
     return "quit"
-#Allowas the player to recieve additional help
+# Allowas the player to recieve additional help
 def help():
     clear()
     print(f"{border}\nHelp\n{border}\n\n"
@@ -285,7 +286,7 @@ def help():
           #combat help
           "\nType: attack, a or just pressing enter will allow you to attack\n\nrunning away will give the enemy a chance to to get a hit in")
     pressEnterToContinue()
-
+# You win Screen 
 def youWin(playerCharacter):
     clear()
     print(f"\n{border}\nCongratulations {playerCharacter.mName} You've WON!!!\n{border}\n Here is your over all Score {playerCharacter.mScore}\n\n would you like to play again?\n\n")
@@ -295,7 +296,7 @@ def youWin(playerCharacter):
         menu()
     else:
         quitGame()
-
+# Calls current room and displays information with UI
 def displayRoomInformation(currentRoom):
     clear()
     print(f"{border}"
@@ -304,7 +305,7 @@ def displayRoomInformation(currentRoom):
           "\nCurrent Room Description:\n"
           f"\n{currentRoom["description"]}")
     print(border)
-
+# Player vs Enemy combat
 def combat(playerCharacter, currentRoom):
     command = ""
     enemy = randomEnemySelector(currentRoom)
@@ -411,33 +412,30 @@ def riddle(playerCharacter):
         else:
             print(f"{command} inccorect..\n")
     
-# Modify the main function to loop based on the menu result
 def main():
-    gameRunning = True
-    while gameRunning:
-        while menu():
-            playerCharacter = characterCreator()
-            introduction()
-            currentRoom = rooms["enchantedForest"]
-            while playerCharacter.mHealth >= 0:
-                clear()
-                currentRoom.displayLocationDescription()
-                userInput = input(f"\nType one of the following commands:\n\nChange room: {currentRoom.mDirections}\n\nL: Look\n\nS: Stats\n\nU: Use item\n\nH: Help\n\nE: Exit\n\n>").lower()
-                if userInput in ["help", "h"]:
-                    help()
-                elif userInput in ["look", "l"]:
-                    challenge(currentRoom, playerCharacter)
-                elif userInput in ["stats", "s"]:
-                    playerCharacter.playerStats()
-                    pressEnterToContinue()
-                elif userInput in ["use item", "u"]:
-                    playerCharacter.useItem()
-                elif userInput in currentRoom.mDirections:
-                    currentRoom = currentRoom.navigation(userInput, playerCharacter)
-                elif userInput in ["exit", "e"]:
-                    yeaOrNay("Are you Sure you want to  exit? (Y/N)")
-                    break
-        gameRunning = gameOver(playerCharacter)
+    while menu():
+        playerCharacter = characterCreator()
+        introduction()
+        currentRoom = rooms["enchantedForest"]
+        while playerCharacter.mHealth >= 0:
+            clear()
+            currentRoom.displayLocationDescription()
+            userInput = input(f"\nType one of the following commands:\n\nChange room: {currentRoom.mDirections}\n\nL: Look\n\nS: Stats\n\nU: Use item\n\nH: Help\n\nE: Exit\n\n>").lower()
+            if userInput in ["help", "h"]:
+                help()
+            elif userInput in ["look", "l"]:
+                challenge(currentRoom, playerCharacter)
+            elif userInput in ["stats", "s"]:
+                playerCharacter.playerStats()
+                pressEnterToContinue()
+            elif userInput in ["use item", "u"]:
+                playerCharacter.useItem()
+            elif userInput in currentRoom.mDirections:
+                currentRoom = currentRoom.navigation(userInput, playerCharacter)
+            elif userInput in ["exit", "e"]:
+                yeaOrNay("Are you Sure you want to  exit? (Y/N)")
+                break
+            gameOver(playerCharacter)
 if __name__ == "__main__":
     main()
 
