@@ -248,6 +248,8 @@ def yeaOrNay(prompt):
 # Displays game over screen
 def gameOver(playerCharacter):
     if playerCharacter.mHealth < 1:
+        pressEnterToContinue()
+        print(border)
         with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[201:208]:
                 print(line.rstrip())
@@ -299,7 +301,7 @@ def characterCreator():
             
 # Random enemy generator
 def randomEnemySelector(currentRoom):
-    randomEnemy = random.randint(1,4)
+    randomEnemy = random.randint(0,4)
     # Checks if boss room then returns boss else you get a random enemy
     if currentRoom.mLocation == "Hidden Ritural Site":
         enemy = CCharacter("boss", None, 100, None, 30, 0.3, None, 500, 1, 29)
@@ -311,7 +313,7 @@ def randomEnemySelector(currentRoom):
         enemy = CCharacter("Demon", None, 40, None, 18, 0.25, None, 130, 29, 54)
         return enemy
     elif randomEnemy == 3:
-        enemy = CCharacter("Orc", None, 50, None, 16, 0.12, None, 150, 144, 162)
+        enemy = CCharacter("Lizard Man", None, 50, None, 16, 0.12, None, 150, 144, 162)
         return enemy
     elif randomEnemy == 4:
         enemy = CCharacter("Manticore", None, 70, None, 20, 0.28, None, 200, 54, 76)
@@ -332,11 +334,11 @@ def menu():
         with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[0:29]:
                 print(line.rstrip())
-        print(f"{border}\n\t\t\tThe Hero of Umaros and the Giant Behemoth\n{border}\n"
-              "\n1. New Game\n"
-              "\n2. Load Game\n"
-              "\n3. Help\n"
-              f"\n4. Quit\n\n{border}")
+        print(f"{border}\n\t\t\tThe Hero of Umaros and the Giant Behemoth\n{border}"
+              "1. New Game\n"
+              "2. Load Game\n"
+              "3. Help\n"
+              f"4. Quit{border}")
         command = input("Type thy choice:\n\n> ").lower()
         if command == "1" or command == "new game" or command == "one":
             return True
@@ -373,6 +375,7 @@ def help():
 # You win Screen 
 def youWin(playerCharacter):
     clear()
+    print(border)
     with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[208:215]:
                 print(line.rstrip())
@@ -403,7 +406,7 @@ def combat(playerCharacter, currentRoom):
         randomDamage = random.randint(0, 10)
         pressEnterToContinue()
         enemy.AskiiArt()
-        print(f"{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}")
+        print(f"{border}{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}{border}")
         command = input(f"\na: attack\n\nr:Run away\n\nh: Help\n\nu: Use item>").lower()
         if command in ["help", "h"]:
             help()
@@ -483,9 +486,9 @@ def randomRiddleSelector():
 def riddle(playerCharacter):
     command = ""
     riddle = randomRiddleSelector()
-    riddle.AskiiArt()
-    print (f"{border}you hear an annoying voice...{border}NEB: if you want the key riddle me this: {riddle.mName}")
     while command != riddle.mHero:
+        riddle.AskiiArt()
+        print (f"{border}you hear an annoying voice...{border}NEB: if you want the key riddle me this: {riddle.mName}")
         command = input("What is your anwser?\n\nh: help\n\nt: tip\n\nl: leave\n\n>").lower()
         if command in ["help", "h"]:
             help()
