@@ -2,17 +2,30 @@
 import os
 import random
 import time
+
 #Character class
 class CCharacter:
+    # Initialize character attributes
+    mName = ""
+    mHero = "" 
+    mHealth = ""
+    mKeys = ""
+    mDamage = ""
+    mDefence = ""
+    mInventory = ""
+    mScore = ""
+
     def __init__(self, name, hero, health, key, damage, defence, inventory, score):
+        # Constructor to initialize character attributes
         self.mName = name
         self.mHero = hero
         self.mHealth = health
-        self.mKeys = []
+        self.mKeys = key
         self.mDamage = damage
         self.mDefence = defence
         self.mInventory = inventory
         self.mScore = score
+
     #Displays players stats
     def playerStats(self):
         clear()
@@ -25,47 +38,67 @@ class CCharacter:
               f"\nDeffence: {self.mDefence}%\n{border}"
               f"\nInventory: {self.mInventory}"
               f"\nKeys: {self.mKeys}\n{border}")
+        
     #Adds items to inventory
     def addToInventory(self, item):
         self.mInventory.append(item)
         print(f"{item} added to inventory.")
+
     #Uses item from inventory, adds it to stats and removes it from list
     def useItem(self):
+        # Initilize potion effects
+        healthEffect = 30
+        damageEffect = 15
+        defenceEffect = 0.1
+        boosterHealthEffect = 5
+        boosterDamageEffect = 5
+        boosterDefenceEffect = 5
+
         clear()
         command = input(f"\n{border}\nWhat item would you like to use\n{border}\nInventory: {self.mInventory}\n{border}\n>").lower()
         if command in ["health", "health potion", "h"]:
             if "health potion" in self.mInventory:
-                self.mHealth += 30
+                self.mHealth += healthEffect
                 self.mInventory.remove("health potion")
                 print("Your health has increased by 30 points")
         elif command in ["damage", "damage potion", "d"]:
             if "damage potion" in self.mInventory:
-                self.mDamage += 15
+                self.mDamage += damageEffect
                 self.mInventory.remove("damage potion")
                 print("Your physical damage have increased by 14 points")
         elif command in ["protection", "protection potion", "p"]:
             if "protection potion" in self.mInventory:
-                self.mDefence += 0.1
+                self.mDefence += defenceEffect
                 self.mInventory.remove("protection potion")
                 print("Your protections have increased by 0.05%")
         elif command in ["boost","booster", "booster potion", "b"]:
             if "booster potion" in self.mInventory:
-                self.mDefence += 0.05
-                self.mDamage += 5
-                self.mHealth += 5
+                self.mDefence += boosterDefenceEffect
+                self.mDamage += boosterDamageEffect
+                self.mHealth += boosterHealthEffect
                 self.mInventory.remove("booster potion")
                 print(f"All Your stats have increased by 5 and defence by 0.05%")
         else:
             print(f"{command} not recognised.")
             pressEnterToContinue()
+
 # Rooms class
 class CRoom:
+    #Initilize room attributes
+    mLocation = ""
+    mDescription = ""
+    mDirections = ""
+    mChallenge = ""
+    mItem = ""
+
     def __init__(self, location, description, directions, challenge, item):
+        # Constructor to initialize room attributes
         self.mLocation = location
         self.mDescription = description
         self.mDirections = directions
         self.mChallenge = challenge
         self.mItem = item
+
     # Displays the current rooms description
     def displayLocationDescription(self):
         print(f"\n{border}\nLocation: {self.mLocation}\n{border}\n{self.mDescription}\n{border}")
@@ -73,6 +106,7 @@ class CRoom:
             print(f"Challenge completed{border}")
         else:
             print(f"Challenge not completed{border}")
+
     # Navigate rooms
     def navigation(self, direction, playerCharacter):
     # Checks if the rooms challenge has been completed
@@ -101,36 +135,54 @@ class CRoom:
 rooms = {
     "enchantedForest": CRoom(
         location = "Enchanted Forest",
-        description ="Surrounded by tall, dark trees, you stand in a mystical forest. Blue leaves gently descend\nfrom the sky, casting an ethereal glow upon the surroundings. The air is filled with\nenchantment as the magical foliage paints the scene with its serene illumination.",
+        description ="Surrounded by tall, dark trees, you stand in a mystical forest. Blue leaves gently descend"
+        "\nfrom the sky, casting an ethereal glow upon the surroundings. The air is filled with"
+        "\nenchantment as the magical foliage paints the scene with its serene illumination.",
         directions = {"west": "frozenStoneGarden"},
         challenge = {"completed": False},
         item = "Enchanted Rune"),
+
     "frozenStoneGarden": CRoom(
         location = "Frozen Stone Garden",
-        description = "In this frigid landscape, an intense cold envelops everything. Frozen statues dot the\nsurroundings, revealing upon closer examination that they are not sculptures but the chilling\nfate of people and creatures caught in an icy stasis. The profound stillness of this frozen\nrealm conceals the silent stories of those who succumbed to the relentless grip of cold.",
+        description = "In this frigid landscape, an intense cold envelops everything. Frozen statues dot the"
+        "\nsurroundings, revealing upon closer examination that they are not sculptures but the chilling"
+        "\nfate of people and creatures caught in an icy stasis. The profound stillness of this frozen"
+        "\nrealm conceals the silent stories of those who succumbed to the relentless grip of cold.",
         directions = {"north": "floodedAlcemyRoom", "east": "enchantedForest", "south": "magicalLibariy", "west": "hiddenRituralSite"},
         challenge = {"completed": False},
         item = "Ice Rune"),
+
     "floodedAlcemyRoom": CRoom(
         location = "Flooded Alcemy Room",
-        description = "Vivid hues of moss and slime coat the walls, creating a surreal tapestry of colors. The floor,\nobscured by an unseen flood, bears witness to a chemical concoction that has transformed the\nenvironment into a mesmerizing yet mysterious spectacle. The amalgamation of diverse chemicals\nbeneath contributes to a uniquely vibrant and enigmatic atmosphere within these walls.",
+        description = "Vivid hues of moss and slime coat the walls, creating a surreal tapestry of colors. The floor,"
+        "\nobscured by an unseen flood, bears witness to a chemical concoction that has transformed the"
+        "\nenvironment into a mesmerizing yet mysterious spectacle. The amalgamation of diverse chemicals"
+        "\nbeneath contributes to a uniquely vibrant and enigmatic atmosphere within these walls.",
         directions = {"south": "frozenStoneGarden"},
         challenge = {"completed": False},
         item = "Liqued Rune"),
+
     "magicalLibariy": CRoom(
         location = "Magical Libariy",
-        description = "A whirlwind of books fills the air, with each tome rising from a pile on the ground,\nfloating gracefully to find its place on an infinite bookcase. Yet, the cycle repeats as\nthe books descend, creating a mesmerizing and perpetual dance of literature. The never-ending\nspectacle captures the essence of an unending cycle, where knowledge and stories take flight\nonly to return and continue their enchanting journey.",
+        description = "A whirlwind of books fills the air, with each tome rising from a pile on the ground,"
+        "\nfloating gracefully to find its place on an infinite bookcase. Yet, the cycle repeats as"
+        "\nthe books descend, creating a mesmerizing and perpetual dance of literature. The never-ending"
+        "\nspectacle captures the essence of an unending cycle, where knowledge and stories take flight"
+        "\nonly to return and continue their enchanting journey.",
         directions = {"north": "frozenStoneGarden"},
         challenge = {"completed": False},
         item = "Magic Rune"),
+
     "hiddenRituralSite": CRoom(
         location = "Hidden Ritural Site",
         description = "As you tread through the secretive ceremonial grounds, an unexpected revelation unfolds—the\nimposing Boss emerges from the shadows. This pivotal encounter marks a turning point,\npromising both challenges and profound revelations within the mysterious heart of this\nconcealed sanctuary.",
         directions = {"east": "frozenStoneGarden"},
         challenge = {"completed": False},
         item = "boss key")}
+
 #border for UI
 border = ("\n<------------------------------------------------------------------------------------------>\n")  
+
 # Introduction
 def introduction():
     clear()
@@ -159,13 +211,16 @@ def introduction():
         "\ncunning finesse of a Rogue? The destiny of Umaros rests in your hands. Choose wisely "
         "\nand embark on your quest to secure victory and glory.\n")
     pressEnterToContinue()    
+
 # Clears screen
 def clear():
-    os.system("cls" if os.name == "nt" else "clear")
+    os.system('cls')
+
 # Prompts the user to input to clear the screen
 def pressEnterToContinue():
     input("press enter to continue ...")
     clear()
+
 # Yes or no question
 def yeaOrNay(prompt):
     while True:
@@ -176,6 +231,7 @@ def yeaOrNay(prompt):
             return False
         else:
             print("Invalid input. Please enter Yea or Nay.")
+
 # Displays game over screen
 def gameOver(playerCharacter):
     if playerCharacter.mHealth < 1:
@@ -186,6 +242,7 @@ def gameOver(playerCharacter):
             True
         else:
             quitGame()
+
 # Gets players name and makes sure its not too long or too short
 def characterName():
     while True:
@@ -195,6 +252,7 @@ def characterName():
             confirmName = yeaOrNay(f"{border} Is {name} your Name Yae/Nay: \n\n")
             if confirmName:
                 return name
+            
 # Lets player choose what character to play as
 def characterCreator():
         name = characterName()
@@ -222,6 +280,7 @@ def characterCreator():
             command = yeaOrNay("Is this your class Yae/Nay: \n\n>")
             if command:
                 return character
+            
 # Random enemy generator
 def randomEnemySelector(currentRoom):
     randomEnemy = random.randint(1,4)
@@ -241,6 +300,7 @@ def randomEnemySelector(currentRoom):
     elif randomEnemy == 4:
         enemy = CCharacter("Manticore", None, 70, None, 20, 0.28, None, 200)
         return enemy
+    
 # Random loot drops
 def loot(playerCharacter):
     loot = ["health potion", "damage potion", "protection potion", "booster potion"]
@@ -248,6 +308,7 @@ def loot(playerCharacter):
     lootDropped = loot[lootChance]
     playerCharacter.addToInventory(lootDropped)
     return lootDropped
+
 # Starting Main menu
 def menu():
     while True:
@@ -268,15 +329,18 @@ def menu():
         elif command == "4" or command == "quit" or command == "four" or command == "q":
             quitGame()
             return False
+        
 # Allows the player to load a game save
 def loadGame():
     clear()
     print("loagGame")
+
 # Allows the player to exit the game
 def quitGame():
     clear()
     print("Farewell, brave adventurer! Until we meet again.")
     return "quit"
+
 # Allowas the player to recieve additional help
 def help():
     clear()
@@ -286,6 +350,7 @@ def help():
           #combat help
           "\nType: attack, a or just pressing enter will allow you to attack\n\nrunning away will give the enemy a chance to to get a hit in")
     pressEnterToContinue()
+
 # You win Screen 
 def youWin(playerCharacter):
     clear()
@@ -296,6 +361,7 @@ def youWin(playerCharacter):
         menu()
     else:
         quitGame()
+
 # Calls current room and displays information with UI
 def displayRoomInformation(currentRoom):
     clear()
@@ -305,6 +371,7 @@ def displayRoomInformation(currentRoom):
           "\nCurrent Room Description:\n"
           f"\n{currentRoom["description"]}")
     print(border)
+
 # Player vs Enemy combat
 def combat(playerCharacter, currentRoom):
     command = ""
