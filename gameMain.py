@@ -3,6 +3,8 @@ import os
 import random
 import time
 
+asciiArtFilePath = "AskiiArt.txt"
+
 #Character class
 class CCharacter:
     # Initialize character attributes
@@ -14,8 +16,10 @@ class CCharacter:
     mDefence = ""
     mInventory = ""
     mScore = ""
+    mFirstLine = ""
+    mLastLine = ""
 
-    def __init__(self, name, hero, health, key, damage, defence, inventory, score):
+    def __init__(self, name, hero, health, key, damage, defence, inventory, score, firstLine, lastLine):
         # Constructor to initialize character attributes
         self.mName = name
         self.mHero = hero
@@ -25,11 +29,20 @@ class CCharacter:
         self.mDefence = defence
         self.mInventory = inventory
         self.mScore = score
+        self.mFirstLine = firstLine
+        self.mLastLine = lastLine
+
+    # Calls Askii art from text file and displays art based on the lines from the constructors
+    def AskiiArt(self):
+        with open('AskiiArt.txt', 'r') as art_file:
+            for line in art_file.readlines()[self.mFirstLine-1:self.mLastLine-1]:
+                print(line.rstrip())
 
     #Displays players stats
     def playerStats(self):
         clear()
         self.mDefence = round(self.mDefence,2)
+        self.AskiiArt()
         print(f"{border}\nName: {self.mName}\n{border}"
               f"\nScore : {self.mScore}"
               f"\nClass: {self.mHero}"
@@ -261,13 +274,13 @@ def characterCreator():
             while True:
                 command = input(f"{border}\n{name}, What type of hero are you?\n{border}\n1. warrior (easy)\n\n2. mage (medium)\n\n3. rogue (hard)\n\n>").lower()
                 if command in ["warrior", "one", "1"]:
-                    character = CCharacter(name, "Warrior", 200, [], 20, 0.30,["protection potion"], 0)
+                    character = CCharacter(name, "Warrior", 200, [], 20, 0.30,["protection potion"], 0, 97, 123)
                     break
                 elif command in ["mage", "two", "2"]:
-                    character = CCharacter(name, "Mage", 150, [], 25,0.25, ["booster potion"], 0)
+                    character = CCharacter(name, "Mage", 150, [], 25,0.25, ["booster potion"], 0, 76, 97)
                     break
                 elif command in ["rogue", "three", "3"]:
-                    character = CCharacter(name, "Rogue", 130, [], 30, 0.20, ["damage potion"], 0)
+                    character = CCharacter(name, "Rogue", 130, [], 30, 0.20, ["damage potion"], 0, 123, 143)
                     break
             character.playerStats()
             if character.mHero == "Warrior":
@@ -286,19 +299,19 @@ def randomEnemySelector(currentRoom):
     randomEnemy = random.randint(1,4)
     # Checks if boss room then returns boss else you get a random enemy
     if currentRoom.mLocation == "Hidden Ritural Site":
-        enemy = CCharacter("boss", None, 100, None, 30, 0.3, None, 500)
+        enemy = CCharacter("boss", None, 100, None, 30, 0.3, None, 500, 1, 29)
         return enemy
     elif randomEnemy == 1:
-        enemy = CCharacter("Gobblin", None, 40, None, 12, 0.10, None, 100)
+        enemy = CCharacter("Gobblin", None, 40, None, 12, 0.10, None, 100, 144, 162)
         return enemy
     elif randomEnemy == 2:
-        enemy = CCharacter("Troll", None, 40, None, 18, 0.25, None, 130)
+        enemy = CCharacter("Demon", None, 40, None, 18, 0.25, None, 130, 29, 54)
         return enemy
     elif randomEnemy == 3:
-        enemy = CCharacter("Orc", None, 50, None, 16, 0.12, None, 150)
+        enemy = CCharacter("Orc", None, 50, None, 16, 0.12, None, 150, 144, 162)
         return enemy
     elif randomEnemy == 4:
-        enemy = CCharacter("Manticore", None, 70, None, 20, 0.28, None, 200)
+        enemy = CCharacter("Manticore", None, 70, None, 20, 0.28, None, 200, 54, 76)
         return enemy
     
 # Random loot drops
@@ -379,8 +392,9 @@ def combat(playerCharacter, currentRoom):
     print(f"you see a {enemy.mName}\nYou have 3 options: ")
     while enemy.mHealth > 0 and playerCharacter.mHealth > 0:
         pressEnterToContinue()
+        enemy.AskiiArt()
         print(f"{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}")
-        command = input(f"\na: attack\n\nr:Run away\n\nh: Help\n\nu: Use item>")
+        command = input(f"\na: attack\n\nr:Run away\n\nh: Help\n\nu: Use item>").lower()
         if command in ["help", "h"]:
             help()
         if command in ["use item", "u"]:
@@ -443,16 +457,16 @@ def challenge(currentRoom, playerCharacter):
 def randomRiddleSelector():
     randomRiddle = random.randint(1,4)
     if randomRiddle == 1:
-        riddle = CCharacter("Riddle 1 question", ["Riddle 1 anwser", "1"], None, None,"riddle 1 hint", None, None, 120)
+        riddle = CCharacter("Riddle 1 question", ["Riddle 1 anwser", "1"], None, None,"riddle 1 hint", None, None, 120, None, None)
         return riddle
     elif randomRiddle == 2:
-        riddle = CCharacter("Riddle 2 question", ["Riddle 2 anwser", "2"], None, None,"riddle 2 hint", None, None, 120)
+        riddle = CCharacter("Riddle 2 question", ["Riddle 2 anwser", "2"], None, None,"riddle 2 hint", None, None, 120, None, None)
         return riddle
     elif randomRiddle == 3:
-        riddle = CCharacter("Riddle 3 question", ["Riddle 3 anwser", "3"], None, None,"riddle 3 hint", None, None, 120)
+        riddle = CCharacter("Riddle 3 question", ["Riddle 3 anwser", "3"], None, None,"riddle 3 hint", None, None, 120, None, None)
         return riddle
     elif randomRiddle == 4:
-        riddle = CCharacter("Riddle 4 question", ["Riddle 4 anwser", "4"], None, None,"riddle 4 hint", None, None, 120)
+        riddle = CCharacter("Riddle 4 question", ["Riddle 4 anwser", "4"], None, None,"riddle 4 hint", None, None, 120, None, None)
         return riddle
 
 def riddle(playerCharacter):
