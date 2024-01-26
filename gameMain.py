@@ -34,8 +34,8 @@ class CCharacter:
 
     # Calls Askii art from text file and displays art based on the lines from the constructors
     def AskiiArt(self):
-        with open('AskiiArt.txt', 'r') as art_file:
-            for line in art_file.readlines()[self.mFirstLine-1:self.mLastLine-1]:
+        with open('AskiiArt.txt', 'r') as artFile:
+            for line in artFile.readlines()[self.mFirstLine-1:self.mLastLine]:
                 print(line.rstrip())
 
     #Displays players stats
@@ -43,14 +43,14 @@ class CCharacter:
         clear()
         self.mDefence = round(self.mDefence,2)
         self.AskiiArt()
-        print(f"{border}\nName: {self.mName}\n{border}"
-              f"\nScore : {self.mScore}"
-              f"\nClass: {self.mHero}"
-              f"\nHP: {self.mHealth}"
-              f"\nAttack: {self.mDamage}"
-              f"\nDeffence: {self.mDefence}%\n{border}"
-              f"\nInventory: {self.mInventory}"
-              f"\nKeys: {self.mKeys}\n{border}")
+        print(f"{border}Name: {self.mName}{border}"
+              f"Score:_________ {self.mScore}"
+              f"\nClass:_________ {self.mHero}"
+              f"\nHP:____________ {self.mHealth}"
+              f"\nAttack:________ {self.mDamage}"
+              f"\nDeffence:______ {self.mDefence}%{border}"
+              f"Inventory:_____ {self.mInventory}"
+              f"\nKeys:__________ {self.mKeys}{border}")
         
     #Adds items to inventory
     def addToInventory(self, item):
@@ -194,7 +194,7 @@ rooms = {
         item = "boss key")}
 
 #border for UI
-border = ("\n<------------------------------------------------------------------------------------------>\n")  
+border = ("\n<==========================================================================================>\n")  
 
 # Introduction
 def introduction():
@@ -248,8 +248,11 @@ def yeaOrNay(prompt):
 # Displays game over screen
 def gameOver(playerCharacter):
     if playerCharacter.mHealth < 1:
-        print(f"Score = {playerCharacter.mScore}")
-        print("You lose Sucker!!!\n\nTry Again?\n\n")
+        with open('AskiiArt.txt', 'r') as artFile:
+            for line in artFile.readlines()[201:208]:
+                print(line.rstrip())
+        print(f"{border}Score = {playerCharacter.mScore}{border}")
+        print("\nTry Again?\n\n")
         command = yeaOrNay("Yae/Nay: \n\n>")
         if command:
             True
@@ -302,7 +305,7 @@ def randomEnemySelector(currentRoom):
         enemy = CCharacter("boss", None, 100, None, 30, 0.3, None, 500, 1, 29)
         return enemy
     elif randomEnemy == 1:
-        enemy = CCharacter("Gobblin", None, 40, None, 12, 0.10, None, 100, 144, 162)
+        enemy = CCharacter("Gobblin", None, 40, None, 12, 0.10, None, 100, 162, 184)
         return enemy
     elif randomEnemy == 2:
         enemy = CCharacter("Demon", None, 40, None, 18, 0.25, None, 130, 29, 54)
@@ -326,6 +329,9 @@ def loot(playerCharacter):
 def menu():
     while True:
         clear()
+        with open('AskiiArt.txt', 'r') as artFile:
+            for line in artFile.readlines()[0:29]:
+                print(line.rstrip())
         print(f"{border}\n\t\t\tThe Hero of Umaros and the Giant Behemoth\n{border}\n"
               "\n1. New Game\n"
               "\n2. Load Game\n"
@@ -354,19 +360,22 @@ def quitGame():
     print("Farewell, brave adventurer! Until we meet again.")
     return "quit"
 
-# Allowas the player to recieve additional help
+# Allows the player to recieve additional help
 def help():
     clear()
     print(f"{border}\nHelp\n{border}\n\n"
-          #general help
-          "Type: help or h to open the instructions men\n\nType: quit or q to quit the game\n\nType: stats or s to show your charcters stats\n\nType: north, east, south or west for moving across rooms\n\nType the corrsponding number to what you would like to do\n"
-          #combat help
-          "\nType: attack, a or just pressing enter will allow you to attack\n\nrunning away will give the enemy a chance to to get a hit in")
+    #general help
+    "Type: help or h to open the instructions men\n\nType: quit or q to quit the game\n\nType: stats or s to show your charcters stats\n\nType: north, east, south or west for moving across rooms\n\nType the corrsponding number to what you would like to do\n"
+    #combat help
+    "\nType: attack, a or just pressing enter will allow you to attack\n\nrunning away will give the enemy a chance to to get a hit in")
     pressEnterToContinue()
 
 # You win Screen 
 def youWin(playerCharacter):
     clear()
+    with open('AskiiArt.txt', 'r') as artFile:
+            for line in artFile.readlines()[208:215]:
+                print(line.rstrip())
     print(f"\n{border}\nCongratulations {playerCharacter.mName} You've WON!!!\n{border}\n Here is your over all Score {playerCharacter.mScore}\n\n would you like to play again?\n\n")
     pressEnterToContinue()
     command = yeaOrNay("Yae/Nay: \n\n>")
@@ -391,6 +400,7 @@ def combat(playerCharacter, currentRoom):
     enemy = randomEnemySelector(currentRoom)
     print(f"you see a {enemy.mName}\nYou have 3 options: ")
     while enemy.mHealth > 0 and playerCharacter.mHealth > 0:
+        randomDamage = random.randint(0, 10)
         pressEnterToContinue()
         enemy.AskiiArt()
         print(f"{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}")
@@ -404,10 +414,11 @@ def combat(playerCharacter, currentRoom):
             hitChance = random.randint(0,10)
             if hitChance > 3:
                 clear()
-                enemy.mHealth -= playerCharacter.mDamage
+                enemy.AskiiArt()
+                enemy.mHealth -= (playerCharacter.mDamage + randomDamage)
                 print(f"succesful strike, enemy Health is now{enemy.mHealth}")
                 if enemy.mHealth > 0:
-                    playerCharacter.mHealth -= round(enemy.mDamage*playerCharacter.mDefence)
+                    playerCharacter.mHealth -= round((enemy.mDamage + randomDamage) * playerCharacter.mDefence)
                     print(f"{enemy.mName} takes a swing and hits you, you now have {playerCharacter.mHealth}")
                     gameOver(playerCharacter)
                 elif enemy.mHealth <= 0 and enemy.mName == "boss":
@@ -421,7 +432,7 @@ def combat(playerCharacter, currentRoom):
             else:
                 clear()
                 print(f"your miss the {enemy.mName} leaving a opening for a counter attack")
-                playerCharacter.mHealth -= enemy.mDamage
+                playerCharacter.mHealth -= (enemy.mDamage + randomDamage )
                 print(f"{enemy.mName} landed a full damage hit,ignoring your deffence; current health is {playerCharacter.mHealth}")
                 gameOver(playerCharacter)
         elif command in ["run away", "three", "3"]:
@@ -433,7 +444,7 @@ def combat(playerCharacter, currentRoom):
                 break
             else:
                 print(f"You tried to escape but the {enemy.mName} was able to get you, Your Health {playerCharacter.mHealth}")
-                playerCharacter.mHealth -= enemy.mDamage
+                playerCharacter.mHealth -= (enemy.mDamage + randomDamage)
                 gameOver(playerCharacter)
         else:
             print(f"{command} not recognised")
@@ -457,35 +468,34 @@ def challenge(currentRoom, playerCharacter):
 def randomRiddleSelector():
     randomRiddle = random.randint(1,4)
     if randomRiddle == 1:
-        riddle = CCharacter("Riddle 1 question", ["Riddle 1 anwser", "1"], None, None,"riddle 1 hint", None, None, 120, None, None)
+        riddle = CCharacter("Riddle 1 question", ["Riddle 1 anwser", "1"], None, None,"riddle 1 hint", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 2:
-        riddle = CCharacter("Riddle 2 question", ["Riddle 2 anwser", "2"], None, None,"riddle 2 hint", None, None, 120, None, None)
+        riddle = CCharacter("Riddle 2 question", ["Riddle 2 anwser", "2"], None, None,"riddle 2 hint", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 3:
-        riddle = CCharacter("Riddle 3 question", ["Riddle 3 anwser", "3"], None, None,"riddle 3 hint", None, None, 120, None, None)
+        riddle = CCharacter("Riddle 3 question", ["Riddle 3 anwser", "3"], None, None,"riddle 3 hint", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 4:
-        riddle = CCharacter("Riddle 4 question", ["Riddle 4 anwser", "4"], None, None,"riddle 4 hint", None, None, 120, None, None)
+        riddle = CCharacter("Riddle 4 question", ["Riddle 4 anwser", "4"], None, None,"riddle 4 hint", None, None, 120, 184, 202)
         return riddle
 
 def riddle(playerCharacter):
     command = ""
     riddle = randomRiddleSelector()
-    print (f"you hear an annoying voice, \nNEB: if you want the key riddle me this{riddle.mName}")
+    riddle.AskiiArt()
+    print (f"{border}you hear an annoying voice...{border}NEB: if you want the key riddle me this: {riddle.mName}")
     while command != riddle.mHero:
         command = input("What is your anwser?\n\nh: help\n\nt: tip\n\nl: leave\n\n>").lower()
         if command in ["help", "h"]:
             help()
-        if command in riddle.mHero:
+        elif command in riddle.mHero:
             playerCharacter.mScore += riddle.mScore
             print(f"Well done {playerCharacter.mName} you guessed correctly")
             break
-
         elif command in ["tip", "t"]:
             print(f"ahh struggling are we, here this should help: \n\n>{riddle.mDamage}")
             pressEnterToContinue()
-
         elif command in["leave", "l"]:
             print("Couldnt handel it ayy, better luck next time")
             pressEnterToContinue()
