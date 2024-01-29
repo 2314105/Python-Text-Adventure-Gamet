@@ -105,7 +105,6 @@ class CCharacter:
             print(f"{command} not recognized.")
             PressEnterToContinue()
 
-
 # Rooms class
 class CRoom:
     #Initilize room attributes
@@ -134,7 +133,6 @@ class CRoom:
             for line in artFile.readlines()[self.mFirstLine-1:self.mLastLine-1]:
                 # Print each line of ASCII art, removing any trailing whitespace
                 print(line.rstrip())
-
 
     # Displays the current rooms description
     def DisplayLocationDescription(self):
@@ -381,8 +379,8 @@ def Menu():
         # Prints the main menu options
         print(f"{border}\n\t\t\tThe Hero of Umaros and the Giant Behemoth\n{border}"
               "1. New Game\n"
-              "2. Load Game\n"
-              "3. Leader Board\n"
+              "2. Load Game (Not Working)\n"
+              "3. Leader Board (Not Working\n"
               "4. Help\n"
               f"5. Quit{border}")
         # Prompts the player to enter their choice
@@ -545,7 +543,7 @@ def Challenge(currentRoom, playerCharacter):
         # Randomly select the type of challenge
         challengeType = random.choice(["riddle", "combat"])
         # Handle different types of challenges based on the room and random selection
-        if currentRoom.mLocation == "Hidden Ritual Site":
+        if currentRoom.mLocation == "Hidden Ritural Site":
             # Handle combat challenge if room location is hidden ritural site
             Combat(playerCharacter, currentRoom)
         elif challengeType == "riddle": 
@@ -649,7 +647,6 @@ def main():
             # Check if the game is over after each iteration of the loop
             gameOver(playerCharacter)
 
-# Execute the main function when the script is run
 if __name__ == "__main__":
     main()
 
