@@ -35,7 +35,7 @@ class CCharacter:
     # Calls Askii art from text file and displays art based on the lines from the constructors
     def AskiiArt(self):
         with open('AskiiArt.txt', 'r') as artFile:
-            for line in artFile.readlines()[self.mFirstLine-1:self.mLastLine]:
+            for line in artFile.readlines()[self.mFirstLine-1:self.mLastLine-1]:
                 print(line.rstrip())
 
     #Displays players stats
@@ -103,17 +103,27 @@ class CRoom:
     mDirections = ""
     mChallenge = ""
     mItem = ""
+    mFirstLine = ""
+    mLastLine = ""
 
-    def __init__(self, location, description, directions, challenge, item):
+    def __init__(self, location, description, directions, challenge, item, firstLine, lastLine):
         # Constructor to initialize room attributes
         self.mLocation = location
         self.mDescription = description
         self.mDirections = directions
         self.mChallenge = challenge
         self.mItem = item
+        self.mFirstLine = firstLine
+        self.mLastLine = lastLine
+        
+    def AskiiArt(self):
+        with open('AskiiArt.txt', 'r') as artFile:
+            for line in artFile.readlines()[self.mFirstLine-1:self.mLastLine-1]:
+                print(line.rstrip())
 
     # Displays the current rooms description
     def displayLocationDescription(self):
+        self.AskiiArt()
         print(f"\n{border}\nLocation: {self.mLocation}\n{border}\n{self.mDescription}\n{border}")
         if self.mChallenge["completed"]:
             print(f"Challenge completed{border}")
@@ -148,32 +158,41 @@ class CRoom:
 rooms = {
     "enchantedForest": CRoom(
         location = "Enchanted Forest",
-        description ="Surrounded by tall, dark trees, you stand in a mystical forest. Blue leaves gently descend"
-        "\nfrom the sky, casting an ethereal glow upon the surroundings. The air is filled with"
-        "\nenchantment as the magical foliage paints the scene with its serene illumination.",
+        description ="You're surrounded by tall dark trees, which are filled with magical energy."
+        "\nThe leaves fall leaving a blue haze in the air, connecting to each other like a dance,"
+        "\nenchanting any who watch this magical play of nature. The ground glows from the icy blue"
+        "\nleaves. You see footsteps that only lead into the castle but none that lead away;"
+        "\n not all of the footsteps are human.",
         directions = {"west": "frozenStoneGarden"},
         challenge = {"completed": False},
-        item = "Enchanted Rune"),
+        item = "Enchanted Rune",
+        firstLine = 216,
+        lastLine = 238),
 
     "frozenStoneGarden": CRoom(
         location = "Frozen Stone Garden",
-        description = "In this frigid landscape, an intense cold envelops everything. Frozen statues dot the"
-        "\nsurroundings, revealing upon closer examination that they are not sculptures but the chilling"
-        "\nfate of people and creatures caught in an icy stasis. The profound stillness of this frozen"
-        "\nrealm conceals the silent stories of those who succumbed to the relentless grip of cold.",
+        description = "Frozen figures are every where, perfectly sculpted with fine and intracet"
+        "\ndetails, but at a closer inspection you come to find that the sculptures are people,"
+        "\nbeasts and monsters who have been trapped here for generations. Amongst the statues"
+        "\nyou see a familia face, a mystical nome called Neb. they say when nomes die they tend"
+        "\nto haunt the surrounding area, best be carful.",
         directions = {"north": "floodedAlcemyRoom", "east": "enchantedForest", "south": "magicalLibariy", "west": "hiddenRituralSite"},
         challenge = {"completed": False},
-        item = "Ice Rune"),
+        item = "Ice Rune",
+        firstLine = 238,
+        lastLine = 275),
 
     "floodedAlcemyRoom": CRoom(
         location = "Flooded Alcemy Room",
         description = "Vivid hues of moss and slime coat the walls, creating a surreal tapestry of colors. The floor,"
         "\nobscured by an unseen flood, bears witness to a chemical concoction that has transformed the"
-        "\nenvironment into a mesmerizing yet mysterious spectacle. The amalgamation of diverse chemicals"
-        "\nbeneath contributes to a uniquely vibrant and enigmatic atmosphere within these walls.",
+        "\nenvironment into a mesmerizing yet mysterious spectacle. The mixture of diverse chemicals"
+        "\nbeneath contributes to a uniquely vibrant and alluring atmosphere.",
         directions = {"south": "frozenStoneGarden"},
         challenge = {"completed": False},
-        item = "Liqued Rune"),
+        item = "Liqued Rune",
+        firstLine = 275,
+        lastLine = 293),
 
     "magicalLibariy": CRoom(
         location = "Magical Libariy",
@@ -184,45 +203,32 @@ rooms = {
         "\nonly to return and continue their enchanting journey.",
         directions = {"north": "frozenStoneGarden"},
         challenge = {"completed": False},
-        item = "Magic Rune"),
+        item = "Magic Rune",
+        firstLine = 293,
+        lastLine = 324),
 
     "hiddenRituralSite": CRoom(
         location = "Hidden Ritural Site",
         description = "As you tread through the secretive ceremonial grounds, an unexpected revelation unfolds—the\nimposing Boss emerges from the shadows. This pivotal encounter marks a turning point,\npromising both challenges and profound revelations within the mysterious heart of this\nconcealed sanctuary.",
         directions = {"east": "frozenStoneGarden"},
         challenge = {"completed": False},
-        item = "boss key")}
+        item = "boss key",
+        firstLine = 324,
+        lastLine = 355)}
 
 #border for UI
 border = ("\n<==========================================================================================>\n")  
 
 # Introduction
-def introduction():
+def introduction(playerCharacter):
     clear()
-    print(f"{border}\nIntroduction\n{border}")
-    print("\nAmidst the mystical realm of Umaros, where tales of valor echo through the ages, you "
-        "\nstand as a celebrated hero. The villagers sing songs of your past triumphs, and your "
-        "\nname is synonymous with bravery and honor. However, a shadow looms over the "
-        "\npeaceful village of Mentos, as the ancient giant Behemoth unleashes his wrath upon its "
-        "\nunsuspecting dwellers."
-        "\n"
-        "\nThe once-thriving village now trembles in the face of Behemoth's malevolence, and a "
-        "\ndesperate call for aid reaches your ears. As the hero of Umaros, duty calls you to "
-        "\nembark on a perilous quest to rescue the besieged village and thwart the ancient "
-        "\ngiant's rampage."
-        "\n"
-        "\nBehemoth's icy castle, a foreboding structure in the distant mountains, stands as the"
-        "\nepicenter of the turmoil. To reach the heart of the storm and confront the colossal "
-        "\nadversary, you must first unravel a cryptic riddle guarding the castle's entrance. Inside, "
-        "\na critical artifact awaits the key to Behemoth's throne room, where the fate of Mentos "
-        "\nhangs in the balance."
-        "\n"
-        "\nYour mission is clear: vanquish the ancient giant, restore peace to the village of "
-        "\nMentos, and etch your name further into the annals of Umaros as a true hero. As you "
-        "\nstand at the precipice of this epic journey, the time has come to choose your path. Will "
-        "\nyou wield the arcane powers of a Mage, the unyielding strength of a Warrior, or the "
-        "\ncunning finesse of a Rogue? The destiny of Umaros rests in your hands. Choose wisely "
-        "\nand embark on your quest to secure victory and glory.\n")
+    print(f"{border}Introduction{border}")
+    print(f"Greetings {playerCharacter.mName}, you are the hero sent from the kingdom Umaros tasked with saving the"
+        "\nvillage of Mentos. They are currently under tyrnical rule of a giant known mostly as behmoth"
+        "\nit's also been rumed that he now has a dragon under his command so please be carfule in"
+        "\nyour future conquest. The icy castle is full of traps and riddles, any time an adventurer"
+        "\nhas gone there its been diffrent every time and you cant leave the room until the"
+        "\nchallenge has been complete, so stay vigilant and be aware of your surroundings")
     pressEnterToContinue()    
 
 # Clears screen
@@ -303,7 +309,7 @@ def characterCreator():
 def randomEnemySelector(currentRoom):
     randomEnemy = random.randint(0,4)
     # Checks if boss room then returns boss else you get a random enemy
-    if currentRoom.mLocation == "Hidden Ritural Site":
+    if currentRoom.mLocation == "Hidden Ritural Site" and currentRoom.mChallenge["completed"] == False:
         enemy = CCharacter("boss", None, 100, None, 30, 0.3, None, 500, 1, 29)
         return enemy
     elif randomEnemy == 1:
@@ -366,10 +372,9 @@ def quitGame():
 def help():
     clear()
     print(f"{border}\nHelp\n{border}\n\n"
-    #general help
-    "Type: help or h to open the instructions men\n\nType: quit or q to quit the game\n\nType: stats or s to show your charcters stats\n\nType: north, east, south or west for moving across rooms\n\nType the corrsponding number to what you would like to do\n"
-    #combat help
-    "\nType: attack, a or just pressing enter will allow you to attack\n\nrunning away will give the enemy a chance to to get a hit in")
+    "General:\nType: help or h to open the instructions menu\nType: quit or q to quit the game\nType use item or u to check your inventory and use an item\nType: stats or s to show your charcters stats\nType: north, east, south or west for moving across rooms"
+    "\n\nCombat:\nType: attack, a or just pressing enter will allow you to attack\nrunning away will give the enemy a chance to to get a hit in\n typing U will allow you tu use a item mid fight"
+    "\n\nRiddle:\nType: tip or t will give you a hint for th riddle\n")
     pressEnterToContinue()
 
 # You win Screen 
@@ -403,11 +408,11 @@ def combat(playerCharacter, currentRoom):
     enemy = randomEnemySelector(currentRoom)
     print(f"you see a {enemy.mName}\nYou have 3 options: ")
     while enemy.mHealth > 0 and playerCharacter.mHealth > 0:
-        randomDamage = random.randint(0, 10)
+        randomDamage = random.randint(0, 5)
         pressEnterToContinue()
         enemy.AskiiArt()
         print(f"{border}{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}{border}")
-        command = input(f"\na: attack\n\nr:Run away\n\nh: Help\n\nu: Use item>").lower()
+        command = input(f"a: attack\nr: Run away\nh: Help\nu: Use item\n\n>").lower()
         if command in ["help", "h"]:
             help()
         if command in ["use item", "u"]:
@@ -471,16 +476,16 @@ def challenge(currentRoom, playerCharacter):
 def randomRiddleSelector():
     randomRiddle = random.randint(1,4)
     if randomRiddle == 1:
-        riddle = CCharacter("Riddle 1 question", ["Riddle 1 anwser", "1"], None, None,"riddle 1 hint", None, None, 120, 184, 202)
+        riddle = CCharacter("What cant speak, but will speak when spoken to?", ["echo", "a echo"], None, None,"I bounce of the walls", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 2:
-        riddle = CCharacter("Riddle 2 question", ["Riddle 2 anwser", "2"], None, None,"riddle 2 hint", None, None, 120, 184, 202)
+        riddle = CCharacter("The more of this there is, the less you see. What is it?", ["darkness", "night"], None, None,"Close your eyes what do you see", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 3:
-        riddle = CCharacter("Riddle 3 question", ["Riddle 3 anwser", "3"], None, None,"riddle 3 hint", None, None, 120, 184, 202)
+        riddle = CCharacter("A man dies of old age on his 25 birthday. How is this possible?", ["he was born on a leap year", "he was born on february 29","february 29", "leap year"], None, None,"Not every year has one", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 4:
-        riddle = CCharacter("Riddle 4 question", ["Riddle 4 anwser", "4"], None, None,"riddle 4 hint", None, None, 120, 184, 202)
+        riddle = CCharacter("I shave every day, but my beard stays the same. What am I?", ["barber", "hairdresser"], None, None,"you might visit them once or twice a month", None, None, 120, 184, 202)
         return riddle
 
 def riddle(playerCharacter):
@@ -509,7 +514,7 @@ def riddle(playerCharacter):
 def main():
     while menu():
         playerCharacter = characterCreator()
-        introduction()
+        introduction(playerCharacter)
         currentRoom = rooms["enchantedForest"]
         while playerCharacter.mHealth >= 0:
             clear()
