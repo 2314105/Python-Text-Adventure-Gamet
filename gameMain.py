@@ -56,7 +56,6 @@ class CCharacter:
         self.mInventory.append(item)
         print(f"{item} added to inventory.")
 
-
     # Uses item from inventory, adds it to stats, and removes it from list
     def UseItem(self):
         # Initialize potion effects
@@ -65,7 +64,7 @@ class CCharacter:
         defenceEffect = 0.1
         boosterHealthEffect = 5
         boosterDamageEffect = 5
-        boosterDefenceEffect = 5
+        boosterDefenceEffect = 0.05
 
         Clear()
         # Prompt the player to choose an item from their inventory
@@ -482,7 +481,7 @@ def Combat(playerCharacter, currentRoom):
         if command in ["help", "h"]:
             Help()
         elif command in ["use item", "u"]:
-            playerCharacter.useItem()
+            playerCharacter.UseItem()
         elif command in ["attack", "a", ""]:
             # Player attacks the enemy
             print(f"You swing your weapon at {enemy.mName}")
