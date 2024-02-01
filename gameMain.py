@@ -1,6 +1,7 @@
 #Import librarys
 import os
 import random
+import time
 
 asciiArtFilePath = "AskiiArt.txt"
 
@@ -229,7 +230,7 @@ rooms = {
         firstLine = 324,
         lastLine = 355)}
 
-#border for UI
+# Border for UI
 border = ("\n<==========================================================================================>\n")  
 
 # Introduction
@@ -240,9 +241,18 @@ def Introduction(playerCharacter):
         "\nvillage of Mentos. They are currently under tyrnical rule of a giant known mostly as behmoth"
         "\nit's also been rumed that he now has a dragon under his command so please be carfule in"
         "\nyour future conquest. The icy castle is full of traps and riddles, any time an adventurer"
-        "\nhas gone there its been diffrent every time and you cant leave the room until the"
+        "\nhas gone there they've never returned, this could be the ghost of an annoyng gnome known as Neb."
+        "\nIt's known that Neb likes to close the gates behind people entrapping them in rooms untill the"
         "\nchallenge has been complete, so stay vigilant and be aware of your surroundings")
     PressEnterToContinue()    
+    print(f"{border}Introduction{border}")
+    print("Each room has a challenge to progress to the next, the room challange must be completed to gain the key"
+          "\nforfeiting the challange will complete the room but you will gain no score and in combat situations"
+          "\nyou may risk getting attacked and not escaping."
+          "\n\nAll four runes need t be collected to enter the boss room, these are collected by completeing\n"
+          "\nroom challanges")
+    PressEnterToContinue()
+
 
 # Clears screen
 def Clear():
@@ -336,35 +346,6 @@ def characterCreator():
             if command:
                 return character
             
-# Random enemy generator
-def RandomEnemySelector(currentRoom):
-    randomEnemy = random.randint(1,4)
-    # Checks if boss room then returns boss else you get a random enemy
-    if currentRoom.mLocation == "Hidden Ritural Site" and currentRoom.mChallenge["completed"] == False:
-        enemy = CCharacter("boss", None, 100, None, 30, 0.3, None, 500, 1, 29)
-    elif randomEnemy == 1:
-        enemy = CCharacter("Gobblin", None, 40, None, 12, 0.10, None, 100, 162, 184)
-    elif randomEnemy == 2:
-        enemy = CCharacter("Demon", None, 40, None, 18, 0.25, None, 130, 29, 54)
-    elif randomEnemy == 3:
-        enemy = CCharacter("Lizard Man", None, 50, None, 16, 0.12, None, 150, 144, 162)
-    elif randomEnemy == 4:
-        enemy = CCharacter("Manticore", None, 70, None, 20, 0.28, None, 200, 54, 76)
-    return enemy
-    
-# Random loot drops
-def Loot(playerCharacter):
-    # List of possible loot drops
-    loot = ["health potion", "damage potion", "protection potion", "booster potion"]
-    # Randomly selects a loot from the list
-    lootChance = random.randint(0, 3)
-    lootDropped = loot[lootChance]
-    # Adds the loot to the player's inventory
-    playerCharacter.AddToInventory(lootDropped)
-    # Returns the name of the loot dropped
-    return lootDropped
-
-
 # Main menu to help navigate the start of the game
 def Menu():
     # Infinite loop to continuously display the menu until a valid choice is made
@@ -422,22 +403,28 @@ def QuitGame():
 # Allows the player to recieve additional help
 def Help():
     Clear()
-    print(f"{border}\nHelp\n{border}\n\n"
-    "General:\nType: help or h to open the instructions menu\nType: quit or q to quit the game\nType use item or u to check your inventory and use an item\nType: stats or s to show your charcters stats\nType: north, east, south or west for moving across rooms"
-    "\n\nCombat:\nType: attack, a or just pressing enter will allow you to attack\nrunning away will give the enemy a chance to to get a hit in\n typing U will allow you tu use a item mid fight"
-    "\n\nRiddle:\nType: tip or t will give you a hint for th riddle\n")
+    print(f"{border}\nHelp\n{border}\n"
+    "General:\n-Type: help or h to open the instructions menu\n-Type: quit or q to quit the game\n-Type: use item or u to check your inventory and use an item-\n-Type: stats or s to show your charcters stats\n-Type: north, east, south or west for moving across rooms"
+    "\n\nCombat:\n-Type: attack, a or just pressing enter will allow you to attack quickly\n-Running away will give the enemy a chance to to get a hit in\n-Type: U or use item to use oneof te potion in your invenory"
+    "\n\nRiddle:\n-Type: tip or t will give you a hint for the riddle"
+    "\n\nBoth challange situations you can forfeit, but you wont gain any score."
+    "\n\nPotions:\n-Potions can be used by using the use item function, from there type the\n potion out or type the first letter.\n")
     PressEnterToContinue()
 
 # You win Screen 
-def YouWin(playerCharacter):
+def YouWin(playerCharacter, startTimer):
     Clear()
     print(border)
+    # Stop timer
+    endTimer = time.time()
+    # Calculate time elapsed
+    timeScore = (endTimer-startTimer)
     # Opens a file containing ASCII art and prints victory
     with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[208:215]:
                 print(line.rstrip())
     # Prints congratulations message with player's name and overall score
-    print(f"\n{border}\nCongratulations {playerCharacter.mName} You've WON!!!\n{border}\n Here is your overall Score {playerCharacter.mScore}\n\n would you like to play again?\n\n")
+    print(f"\n{border}\nCongratulations {playerCharacter.mName} You've WON!!!\n{border}\n Here is your overall Score: {playerCharacter.mScore} Time: {timeScore}\n\n would you like to play again?\n\n")
     PressEnterToContinue()
     # Prompts the player to choose whether to play again or not
     command = YeaOrNay("Yae/Nay: \n\n>")
@@ -460,7 +447,7 @@ def DisplayRoomInformation(currentRoom):
     print(border)
 
 # Player vs Enemy combat
-def Combat(playerCharacter, currentRoom):
+def Combat(playerCharacter, currentRoom, startTimer):
     # Initialize command input variable
     command = ""
     # Select a random enemy for the current room
@@ -474,7 +461,8 @@ def Combat(playerCharacter, currentRoom):
         PressEnterToContinue()
         # Display enemy ASCII art and health information
         enemy.AskiiArt()
-        print(f"{border}{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}{border}")
+        print (border)
+        print(f"{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}{border}")
         # Prompt player for action
         command = input(f"a: Attack\nr: Run away\nh: Help\nu: Use item\n\n>").lower()
         # Handle different player commands
@@ -497,9 +485,9 @@ def Combat(playerCharacter, currentRoom):
                     playerCharacter.mHealth -= round((enemy.mDamage + randomDamage) * playerCharacter.mDefence)
                     print(f"{enemy.mName} takes a swing and hits you. You now have {playerCharacter.mHealth} health.")
                     gameOver(playerCharacter)
-                elif enemy.mHealth <= 0 and enemy.mName == "boss":
+                elif enemy.mHealth <= 0 and enemy.mName == "Behemoth":
                     # Player wins if the defeated enemy is the boss
-                    YouWin(playerCharacter)
+                    YouWin(playerCharacter, startTimer)
                 else:
                     # Enemy defeated adds loot to player inventory
                     lootDropped = Loot(playerCharacter)
@@ -517,11 +505,11 @@ def Combat(playerCharacter, currentRoom):
         elif command in ["run away", "r"]:
             # Player attempts to run away
             Clear()
-            print("You try running away.")
+            print(f"Neb: What you cant beat the {enemy.mName}, fine i'll open the gate, be carful though.")
             hitChance = random.randint(0, 10)
-            if hitChance > 3:
+            if hitChance > 3 or enemy.mName == "Behemoth":
                 # Successful escape
-                print("You managed to escape.")
+                print("Neb: You managed to escape, welldone I guess, heres the key.")
                 break
             else:
                 # Failure to escape
@@ -533,7 +521,7 @@ def Combat(playerCharacter, currentRoom):
             print(f"{command} not recognized.")
 
 # Selects the challenge between riddle and combat, as well as if the room is the boss room
-def Challenge(currentRoom, playerCharacter):
+def Challenge(currentRoom, playerCharacter, startTimer):
     # Check if there is an uncompleted challenge in the current room
     if currentRoom.mChallenge and not currentRoom.mChallenge["completed"]:
         # Display a message indicating a challenge awaits in the current room
@@ -544,13 +532,13 @@ def Challenge(currentRoom, playerCharacter):
         # Handle different types of challenges based on the room and random selection
         if currentRoom.mLocation == "Hidden Ritural Site":
             # Handle combat challenge if room location is hidden ritural site
-            Combat(playerCharacter, currentRoom)
+            Combat(playerCharacter, currentRoom, startTimer)
         elif challengeType == "riddle": 
             # Handle riddle challenge
             Riddle(playerCharacter)
         elif challengeType == "combat":
             # Handle combat challenge
-            Combat(playerCharacter, currentRoom)
+            Combat(playerCharacter, currentRoom, startTimer)
         # Add the key obtained from the challenge to the player's key inventory
         playerCharacter.mKeys.append(currentRoom.mItem)
         # Mark the challenge as completed
@@ -558,6 +546,34 @@ def Challenge(currentRoom, playerCharacter):
     else:
         # Display a message if the challenge in the current room has already been completed
         print(f"The challenge in {currentRoom.mLocation} has already been completed.")
+
+# Random enemy generator
+def RandomEnemySelector(currentRoom):
+    randomEnemy = random.randint(1,4)
+    # Checks if boss room then returns boss else you get a random enemy
+    if currentRoom.mLocation == "Hidden Ritural Site" and currentRoom.mChallenge["completed"] == False:
+        enemy = CCharacter("Behemoth", None, 100, None, 30, 0.3, None, 500, 1, 29)
+    elif randomEnemy == 1:
+        enemy = CCharacter("Gobblin", None, 40, None, 12, 0.10, None, 100, 162, 184)
+    elif randomEnemy == 2:
+        enemy = CCharacter("Demon", None, 40, None, 18, 0.25, None, 130, 29, 54)
+    elif randomEnemy == 3:
+        enemy = CCharacter("Lizard Man", None, 50, None, 16, 0.12, None, 150, 144, 162)
+    elif randomEnemy == 4:
+        enemy = CCharacter("Manticore", None, 70, None, 20, 0.28, None, 200, 54, 76)
+    return enemy
+    
+# Random loot drops
+def Loot(playerCharacter):
+    # List of possible loot drops
+    loot = ["health potion", "damage potion", "protection potion", "booster potion"]
+    # Randomly selects a loot from the list
+    lootChance = random.randint(0, 3)
+    lootDropped = loot[lootChance]
+    # Adds the loot to the player's inventory
+    playerCharacter.AddToInventory(lootDropped)
+    # Returns the name of the loot dropped
+    return lootDropped
 
 
 # Selects a random riddle
@@ -586,6 +602,7 @@ def Riddle(playerCharacter):
     riddle = RandomRiddleSelector()
     # Continue looping until the player answers the riddle correctly or chooses to leave
     while command != riddle.mHero:
+        PressEnterToContinue()
         # Display the riddle
         riddle.AskiiArt()
         print(f"{border}you hear an annoying voice...{border}NEB: if you want the key riddle me this: {riddle.mName}")
@@ -600,10 +617,10 @@ def Riddle(playerCharacter):
             break
         elif command in ["tip", "t"]:
             # Display a tip to help the player solve the riddle
-            print(f"Struggling? Here's a tip: \n\n>{riddle.mDamage}")
+            print(f"Struggling? Here's a tip: \n\n>{riddle.mDamage}\n")
         elif command in["leave", "l"]:
             # Display a message if the player chooses to leave the riddle
-            print("Couldn't handle it, better luck next time")
+            print("Neb: Couldnt handle the riddle... fine i'll let you out, here's the key but you're not getting any points.")
             PressEnterToContinue()
             break
         else:
@@ -618,6 +635,8 @@ def main():
         playerCharacter = characterCreator()
         # Introduce the player to the game
         Introduction(playerCharacter)
+        # Start timer
+        startTimer = time.time()
         # Start the player in the enchanted forest room
         currentRoom = rooms["enchantedForest"]
         # Continue looping until the player's health reaches 0
@@ -632,7 +651,7 @@ def main():
             if userInput in ["help", "h"]:
                 Help()
             elif userInput in ["look", "l"]:
-                Challenge(currentRoom, playerCharacter)
+                Challenge(currentRoom, playerCharacter, startTimer)
             elif userInput in ["stats", "s"]:
                 playerCharacter.PlayerStats()
                 PressEnterToContinue()
@@ -645,7 +664,6 @@ def main():
                 break
             # Check if the game is over after each iteration of the loop
             gameOver(playerCharacter)
-
 if __name__ == "__main__":
     main()
 
