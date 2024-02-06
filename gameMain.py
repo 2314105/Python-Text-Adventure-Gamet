@@ -3,8 +3,6 @@ import os
 import random
 import time
 
-asciiArtFilePath = "AskiiArt.txt"
-
 #Character class
 class CCharacter:
     # Initialize character attributes
@@ -69,29 +67,29 @@ class CCharacter:
 
         Clear()
         # Prompt the player to choose an item from their inventory
-        command = input(f"\n{border}\nWhat item would you like to use\n{border}\nInventory: {self.mInventory}\n{border}\n>").lower()
-        if command in ["health", "health potion", "h"]:
+        userInput = input(f"\n{border}\nWhat item would you like to use\n{border}\nInventory: {self.mInventory}\n{border}\n>").lower()
+        if userInput in ["health", "health potion", "h"]:
             # Check if the player has a health potion in their inventory
             if "health potion" in self.mInventory:
                 # Apply health effect, remove the item from inventory, and inform the player
                 self.mHealth += healthEffect
                 self.mInventory.remove("health potion")
                 print("Your health has increased by 30 points")
-        elif command in ["damage", "damage potion", "d"]:
+        elif userInput in ["damage", "damage potion", "d"]:
             # Check if the player has a damage potion in their inventory
             if "damage potion" in self.mInventory:
                 # Apply damage effect, remove the item from inventory, and inform the player
                 self.mDamage += damageEffect
                 self.mInventory.remove("damage potion")
                 print("Your physical damage has increased by 15 points")
-        elif command in ["protection", "protection potion", "p"]:
+        elif userInput in ["protection", "protection potion", "p"]:
             # Check if the player has a protection potion in their inventory
             if "protection potion" in self.mInventory:
                 # Apply defence effect, remove the item from inventory, and inform the player
                 self.mDefence += defenceEffect
                 self.mInventory.remove("protection potion")
                 print("Your protection has increased by 0.1%")
-        elif command in ["boost","booster", "booster potion", "b"]:
+        elif userInput in ["boost","booster", "booster potion", "b"]:
             # Check if the player has a booster potion in their inventory
             if "booster potion" in self.mInventory:
                 # Apply all stats boosting effects, remove the item from inventory, and inform the player
@@ -102,7 +100,7 @@ class CCharacter:
                 print("All your stats have increased by 5 and defence by 0.05%")
         else:
             # Inform the player of unrecognized input
-            print(f"{command} not recognized.")
+            print(f"{userInput} not recognized.")
             PressEnterToContinue()
 
 # Rooms class
@@ -148,7 +146,7 @@ class CRoom:
     def Navigation(self, direction, playerCharacter):
     # Checks if the rooms challenge has been completed
         if self.mChallenge and not self.mChallenge["completed"]:
-            print("You must complete the challenge before moving to the next room")
+            print("NEB: You've got to complete my challenge before moving on.")
             PressEnterToContinue()
             return self
         # Checks of the next room is the boss room and if you have all 4 keys
@@ -223,7 +221,10 @@ rooms = {
 
     "hiddenRituralSite": CRoom(
         location = "Hidden Ritural Site",
-        description = "As you tread through the secretive ceremonial grounds, an unexpected revelation unfolds—the\nimposing Boss emerges from the shadows. This pivotal encounter marks a turning point,\npromising both challenges and profound revelations within the mysterious heart of this\nconcealed sanctuary.",
+        description = "As you tread through the secretive ceremonial grounds, an unexpected revelation unfolds—the"
+        "\nimposing Boss emerges from the shadows. This pivotal encounter marks a turning point,"
+        "\npromising both challenges and profound revelations within the mysterious heart of this"
+        "\nconcealed sanctuary.",
         directions = {"east": "frozenStoneGarden"},
         challenge = {"completed": False},
         item = "boss key",
@@ -239,20 +240,21 @@ def Introduction(playerCharacter):
     print(f"{border}Introduction{border}")
     print(f"Greetings {playerCharacter.mName}, you are the hero sent from the kingdom Umaros tasked with saving the"
         "\nvillage of Mentos. They are currently under tyrnical rule of a giant known mostly as behmoth"
-        "\nit's also been rumed that he now has a dragon under his command so please be carfule in"
+        "\nit's also been rumed that he now has a dragon under his userInput so please be carfule in"
         "\nyour future conquest. The icy castle is full of traps and riddles, any time an adventurer"
-        "\nhas gone there they've never returned, this could be the ghost of an annoyng gnome known as Neb."
-        "\nIt's known that Neb likes to close the gates behind people entrapping them in rooms untill the"
-        "\nchallenge has been complete, so stay vigilant and be aware of your surroundings")
+        "\nhas gone there they've never returned, this could be the ghost of a ghostly gnome known as"
+        "\nNEB. It's known that Neb likes to close the gates behind people entrapping them in rooms"
+        "\nuntill the challenge has been complete, so stay vigilant and be aware of your surroundings")
     PressEnterToContinue()    
     print(f"{border}Introduction{border}")
-    print("Each room has a challenge to progress to the next, the room challange must be completed to gain the key"
-          "\nforfeiting the challange will complete the room but you will gain no score and in combat situations"
-          "\nyou may risk getting attacked and not escaping."
-          "\n\nAll four runes need t be collected to enter the boss room, these are collected by completeing\n"
-          "\nroom challanges")
+    print("Each room has a challenge to progress to the next, the room challange must be completed to"
+          "\ngain the key forfeiting the challange will complete the room but you will gain no score"
+          "\nand in combat situationsyou may risk getting attacked and not escaping."
+          "\n\nAll four runes need to be collected to enter the boss room, these are collected by\n"
+          "\ncompleteing room challanges"
+          "\nChallanges are randomly generated between combat and a riddle, and from there the"
+          "\nriddle or combat is also randomly chosen, making a sure that not all games are the same.")
     PressEnterToContinue()
-
 
 # Clears screen
 def Clear():
@@ -279,9 +281,8 @@ def YeaOrNay(prompt):
             # Prompts the user to enter a valid input
             print("Invalid input. Please enter Yea or Nay.")
 
-
 # Displays game over screen
-def gameOver(playerCharacter):
+def GameOver(playerCharacter):
     # Checks if the player's health is below 1
     if playerCharacter.mHealth < 1:
         # Waits for player confirmation
@@ -295,8 +296,8 @@ def gameOver(playerCharacter):
         print(f"{border}Score = {playerCharacter.mScore}{border}")
         print("\nTry Again?\n\n")
         # Asks the player if they want to play again
-        command = YeaOrNay("Yae/Nay: \n\n>")
-        if command:
+        userInput = YeaOrNay("Yae/Nay: \n\n>")
+        if userInput:
             return True
         else:
             # Quits the game if the player chooses not to play again
@@ -315,7 +316,7 @@ def CharacterName():
                 return name
             
 # Lets player choose what character to play as
-def characterCreator():
+def CharacterCreator():
         # Gets name of the user
         name = CharacterName()
         while True:
@@ -323,16 +324,19 @@ def characterCreator():
             # Loops until the user has selected a hero
             while True:
                 # Prompts the user to select a character type
-                command = input(f"{border}\n{name}, What type of hero are you?\n{border}\n1. warrior (easy)\n\n2. mage (medium)\n\n3. rogue (hard)\n\n>").lower()
-                if command in ["warrior", "one", "1"]:
-                    character = CCharacter(name, "Warrior", 200, [], 20, 0.30,["protection potion"], 0, 97, 123)
+                userInput = input(f"{border}\n{name}, What type of hero are you?\n{border}\n1. warrior (easy)\n\n2. mage (medium)\n\n3. rogue (hard)\n\n>").lower()
+                if userInput in ["warrior", "one", "1"]:
+                    character = CCharacter(name, "Warrior", 300, [], 40, 0.30,["protection potion"], 0, 97, 123)
                     break
-                elif command in ["mage", "two", "2"]:
-                    character = CCharacter(name, "Mage", 150, [], 25,0.25, ["booster potion"], 0, 76, 97)
+                elif userInput in ["mage", "two", "2"]:
+                    character = CCharacter(name, "Mage", 200, [], 50,0.25, ["booster potion"], 0, 76, 97)
                     break
-                elif command in ["rogue", "three", "3"]:
-                    character = CCharacter(name, "Rogue", 130, [], 30, 0.20, ["damage potion"], 0, 123, 143)
+                elif userInput in ["rogue", "three", "3"]:
+                    character = CCharacter(name, "Rogue", 170, [], 70, 0.20, ["damage potion"], 0, 123, 143)
                     break
+                else:
+                    print(f"{name}, {userInput} is not one of the options, please try again")
+                    PressEnterToContinue()
             # Displays the players stats and information
             character.PlayerStats()
             if character.mHero == "Warrior":
@@ -342,8 +346,8 @@ def characterCreator():
             else:
                 print("The Rogue class is the hardest out of all three, if youre feeling lucky you can get \nsome series damage out, but ifyour hit its gunna hurt.\n")
                 
-            command = YeaOrNay("Is this your class Yae/Nay: \n\n>")
-            if command:
+            userInput = YeaOrNay("Is this your class Yae/Nay: \n\n>")
+            if userInput:
                 return character
             
 # Main menu to help navigate the start of the game
@@ -360,39 +364,30 @@ def Menu():
         print(f"{border}\n\t\t\tThe Hero of Umaros and the Giant Behemoth\n{border}"
               "1. New Game\n"
               "2. Load Game (Not Working)\n"
-              "3. Leader Board (Not Working\n"
+              "3. Leader Board\n"
               "4. Help\n"
               f"5. Quit{border}")
         # Prompts the player to enter their choice
-        command = input("Type thy choice:\n\n> ").lower()
+        userInput = input("Type thy choice:\n\n> ").lower()
         # Checks the player's input and performs corresponding actions
-        if command in ["1", "one", "new game"]:
+        if userInput in ["1", "one", "new game"]:
             # Returns True to indicate starting a new game
             return True
-        elif command in ["2", "two", "load game"]:
+        elif userInput in ["2", "two", "load game"]:
             # Loads a saved game
-            LoadGame()
+           # LoadGame()
             return False
-        elif command in ["3", "three", "leader board"]:
+        elif userInput in ["3", "three", "leader board"]:
             # Displays the leaderboard by reading scores from a file
-            file = open("Score.txt", "r")
-            for line in file:
-                xline = line.split(",")
-                print(xline[0], xline[1])
-        elif command == "4" or command == "help" or command == "four" or command == "h":
+            DisplayLeaderBoard()
+        elif userInput == "4" or userInput == "help" or userInput == "four" or userInput == "h":
             # Displays the help menu
             Help()
-        elif command == "5" or command == "quit" or command == "five" or command == "q":
+        elif userInput == "5" or userInput == "quit" or userInput == "five" or userInput == "q":
             # Quits the game
             QuitGame()
             # Returns False to indicate not starting a new game
             return False
-
-        
-# Allows the player to load a game save
-def LoadGame():
-    Clear()
-    print("loagGame")
 
 # Allows the player to exit the game
 def QuitGame():
@@ -408,17 +403,54 @@ def Help():
     "\n\nCombat:\n-Type: attack, a or just pressing enter will allow you to attack quickly\n-Running away will give the enemy a chance to to get a hit in\n-Type: U or use item to use oneof te potion in your invenory"
     "\n\nRiddle:\n-Type: tip or t will give you a hint for the riddle"
     "\n\nBoth challange situations you can forfeit, but you wont gain any score."
-    "\n\nPotions:\n-Potions can be used by using the use item function, from there type the\n potion out or type the first letter.\n")
+    "\n\nPotions:\n-Potions can be used by using the 'use item' function, from there type the\n potion out or type the first letter. E.G: health potion or h\n")
     PressEnterToContinue()
 
+# Displays the top 10 scores from the Score.txt file
+def DisplayLeaderBoard():
+    scores = []
+    Clear()
+    # Open the Score text file in read mode
+    try:
+        with open("Score.txt", "r") as file:
+            # Iterate through each line in the file
+            for line in file:
+                # Append each line to the scores list
+                scores.append(int(line))
+        # Sorts the scores in descending order
+        listLength = len(scores)
+        for i in range(listLength):
+            for j in range(0, listLength - i - 1):
+                if scores[j] < scores[j + 1]:
+                    scores[j], scores[j + 1] = scores[j + 1], scores[j]
+        # Keep only the top 10 scores)
+        topTenScores = scores[:10]
+        # Display the top 10 scores
+        print(f"{border}\nLeader Board\n{border}")
+        for i, score in enumerate(topTenScores):
+            print(f"{i + 1}. {score}")
+        print(border)
+        PressEnterToContinue()
+        # Write the top 10 scores back to the Score.txt file
+        with open("Score.txt", "w") as file:
+            for score in topTenScores:
+                file.write(f"{score}\n")
+    except FileNotFoundError:
+        # Display a message if the file is not found
+        print("No scores found.")
+        PressEnterToContinue()
+       
 # You win Screen 
 def YouWin(playerCharacter, startTimer):
     Clear()
     print(border)
     # Stop timer
     endTimer = time.time()
-    # Calculate time elapsed
-    timeScore = (endTimer-startTimer)
+    # Calculate time elapsed and rounds to 2 decimal places
+    timeScore = round(endTimer-startTimer,2)
+    # Write player's score to a file
+    with open("Score.txt", "a") as file:
+        file.write(f"{playerCharacter.mScore}\n")
     # Opens a file containing ASCII art and prints victory
     with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[208:215]:
@@ -427,10 +459,11 @@ def YouWin(playerCharacter, startTimer):
     print(f"\n{border}\nCongratulations {playerCharacter.mName} You've WON!!!\n{border}\n Here is your overall Score: {playerCharacter.mScore} Time: {timeScore}\n\n would you like to play again?\n\n")
     PressEnterToContinue()
     # Prompts the player to choose whether to play again or not
-    command = YeaOrNay("Yae/Nay: \n\n>")
+    userInput = YeaOrNay("Yae/Nay: \n\n>")
     # If the player chooses to play again, returns to the main menu
-    if command:
+    if userInput:
         Menu()
+        return True
     # If the player chooses not to play again, exits the game
     else:
         QuitGame()
@@ -448,12 +481,15 @@ def DisplayRoomInformation(currentRoom):
 
 # Player vs Enemy combat
 def Combat(playerCharacter, currentRoom, startTimer):
-    # Initialize command input variable
-    command = ""
+    # Initialize userInput input variable
+    userInput = ""
     # Select a random enemy for the current room
     enemy = RandomEnemySelector(currentRoom)
     # Display enemy information
-    print(f"You see a {enemy.mName}\nYou have 3 options: ")
+    print(f"As you look around the {currentRoom.mLocation}, you hear a ghostly voice, its"
+          f"\nNEB the ghostly gnome. NEB: hey there's a {enemy.mName} over there, if you defeate it"
+          "\nyou'll get some good loot that might help with the final boss, if not i'll let you"
+          f"\nout, make sure to grab that key though.\n{border}")
     # Main combat loop
     while enemy.mHealth > 0 and playerCharacter.mHealth > 0:
         # Generate random damage for each turn
@@ -464,13 +500,13 @@ def Combat(playerCharacter, currentRoom, startTimer):
         print (border)
         print(f"{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}{border}")
         # Prompt player for action
-        command = input(f"a: Attack\nr: Run away\nh: Help\nu: Use item\n\n>").lower()
-        # Handle different player commands
-        if command in ["help", "h"]:
+        userInput = input(f"a: Attack\nr: Run away\nh: Help\nu: Use item\n\n>").lower()
+        # Handle different player userInputs
+        if userInput in ["help", "h"]:
             Help()
-        elif command in ["use item", "u"]:
+        elif userInput in ["use item", "u"]:
             playerCharacter.UseItem()
-        elif command in ["attack", "a", ""]:
+        elif userInput in ["attack", "a", ""]:
             # Player attacks the enemy
             print(f"You swing your weapon at {enemy.mName}")
             hitChance = random.randint(0, 10)
@@ -484,7 +520,7 @@ def Combat(playerCharacter, currentRoom, startTimer):
                     # Enemy attacks if still alive
                     playerCharacter.mHealth -= round((enemy.mDamage + randomDamage) * playerCharacter.mDefence)
                     print(f"{enemy.mName} takes a swing and hits you. You now have {playerCharacter.mHealth} health.")
-                    gameOver(playerCharacter)
+                    GameOver(playerCharacter)
                 elif enemy.mHealth <= 0 and enemy.mName == "Behemoth":
                     # Player wins if the defeated enemy is the boss
                     YouWin(playerCharacter, startTimer)
@@ -501,8 +537,8 @@ def Combat(playerCharacter, currentRoom, startTimer):
                 print(f"You miss the {enemy.mName}, leaving an opening for a counter-attack.")
                 playerCharacter.mHealth -= (enemy.mDamage + randomDamage)
                 print(f"{enemy.mName} lands a full damage hit, ignoring your defense. Current health is {playerCharacter.mHealth}.")
-                gameOver(playerCharacter)
-        elif command in ["run away", "r"]:
+                GameOver(playerCharacter)
+        elif userInput in ["run away", "r"]:
             # Player attempts to run away
             Clear()
             print(f"Neb: What you cant beat the {enemy.mName}, fine i'll open the gate, be carful though.")
@@ -515,10 +551,10 @@ def Combat(playerCharacter, currentRoom, startTimer):
                 # Failure to escape
                 print(f"You tried to escape, but the {enemy.mName} was able to catch you. Your health: {playerCharacter.mHealth}.")
                 playerCharacter.mHealth -= (enemy.mDamage + randomDamage)
-                gameOver(playerCharacter)
+                GameOver(playerCharacter)
         else:
-            # Invalid command
-            print(f"{command} not recognized.")
+            # Invalid userInput
+            print(f"{userInput} not recognized.")
 
 # Selects the challenge between riddle and combat, as well as if the room is the boss room
 def Challenge(currentRoom, playerCharacter, startTimer):
@@ -526,18 +562,15 @@ def Challenge(currentRoom, playerCharacter, startTimer):
     if currentRoom.mChallenge and not currentRoom.mChallenge["completed"]:
         # Display a message indicating a challenge awaits in the current room
         Clear()
-        print(f"A challenge in {currentRoom.mLocation} awaits you.")
+        print(f"{border}\nA challenge in {currentRoom.mLocation} awaits you.\n{border}")
         # Randomly select the type of challenge
         challengeType = random.choice(["riddle", "combat"])
         # Handle different types of challenges based on the room and random selection
         if currentRoom.mLocation == "Hidden Ritural Site":
-            # Handle combat challenge if room location is hidden ritural site
             Combat(playerCharacter, currentRoom, startTimer)
         elif challengeType == "riddle": 
-            # Handle riddle challenge
             Riddle(playerCharacter)
         elif challengeType == "combat":
-            # Handle combat challenge
             Combat(playerCharacter, currentRoom, startTimer)
         # Add the key obtained from the challenge to the player's key inventory
         playerCharacter.mKeys.append(currentRoom.mItem)
@@ -575,97 +608,105 @@ def Loot(playerCharacter):
     # Returns the name of the loot dropped
     return lootDropped
 
-
 # Selects a random riddle
 def RandomRiddleSelector():
     # Select a random number between 1 and 4
     randomRiddle = random.randint(1, 4)
     if randomRiddle == 1:
         # Create a riddle object with the specified question, possible answers, and additional details
-        riddle = CCharacter("What can't speak, but will speak when spoken to?", ["echo", "an echo"], None, None, "I bounce off the walls", None, None, 120, 184, 202)
+        riddle = CCharacter("What can't speak, but will speak\n when spoken to?", ["echo", "an echo"], None, None, "I bounce off the walls", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 2:
-        riddle = CCharacter("The more of this there is, the less you see. What is it?", ["darkness", "night"], None, None, "Close your eyes, what do you see?", None, None, 120, 184, 202)
+        riddle = CCharacter("The more of this there is, the less you see.\n What is it?", ["darkness", "night"], None, None, "Close your eyes, what do you see?", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 3:
-        riddle = CCharacter("A man dies of old age on his 25th birthday. How is this possible?", ["he was born on a leap year", "he was born on February 29", "February 29", "leap year"], None, None, "Not every year has one", None, None, 120, 184, 202)
+        riddle = CCharacter("A man dies of old age on his 25th birthday.\n How is this possible?", ["he was born on a leap year", "he was born on February 29", "February 29", "leap year"], None, None, "Not every year has one", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 4:
-        riddle = CCharacter("I shave every day, but my beard stays the same. What am I?", ["barber", "hairdresser"], None, None, "You might visit them once or twice a month", None, None, 120, 184, 202)
+        riddle = CCharacter("I shave every day, but my beard stays\n the same. What am I?", ["barber", "hairdresser"], None, None, "You might visit them once or twice a month", None, None, 120, 184, 202)
         return riddle
 
 # Riddle challange
 def Riddle(playerCharacter):
-    # Initialize command variable
-    command = ""
+    # Initialize userInput variable
+    userInput = ""
     # Select a random riddle
     riddle = RandomRiddleSelector()
     # Continue looping until the player answers the riddle correctly or chooses to leave
-    while command != riddle.mHero:
+    while userInput != riddle.mHero:
         PressEnterToContinue()
         # Display the riddle
         riddle.AskiiArt()
         print(f"{border}you hear an annoying voice...{border}NEB: if you want the key riddle me this: {riddle.mName}")
         # Prompt the player for an answer
-        command = input("What is your answer?\n\nh: help\n\nt: tip\n\nl: leave\n\n>").lower()
-        if command in ["help", "h"]:
+        userInput = input("What is your answer?\n\nh: help\n\nt: tip\n\nl: leave\n\n>").lower()
+        if userInput in ["help", "h"]:
             Help()
-        elif command in riddle.mHero:
+        elif userInput in riddle.mHero:
             # Add player's score and display correct answer message if the player's answer is correct
             playerCharacter.mScore += riddle.mScore
             print(f"Well done {playerCharacter.mName} you guessed correctly")
             break
-        elif command in ["tip", "t"]:
+        elif userInput in ["tip", "t"]:
             # Display a tip to help the player solve the riddle
             print(f"Struggling? Here's a tip: \n\n>{riddle.mDamage}\n")
-        elif command in["leave", "l"]:
+        elif userInput in["leave", "l"]:
             # Display a message if the player chooses to leave the riddle
             print("Neb: Couldnt handle the riddle... fine i'll let you out, here's the key but you're not getting any points.")
             PressEnterToContinue()
             break
         else:
             # Display an incorrect answer message if the player's input is not recognized
-            print(f"{command} incorrect..Try again\n")
+            print(f"{userInput} incorrect..Try again\n")
     
 # Main function to run the game
 def main():
-    # Continue running the game until the user chooses to quit from the menu
-    while Menu():
-        # Create the player character
-        playerCharacter = characterCreator()
-        # Introduce the player to the game
-        Introduction(playerCharacter)
-        # Start timer
-        startTimer = time.time()
-        # Start the player in the enchanted forest room
-        currentRoom = rooms["enchantedForest"]
-        # Continue looping until the player's health reaches 0
-        while playerCharacter.mHealth >= 0:
-            # Clear the screen for each iteration of the game loop
-            Clear()
-            # Display the description of the current room
-            currentRoom.DisplayLocationDescription()
-            # Prompt the player to input a command
-            userInput = input(f"\nType one of the following commands:\n\nChange room: {currentRoom.mDirections}\n\nL: Look\n\nS: Stats\n\nU: Use item\n\nH: Help\n\nE: Exit\n\n>").lower()
-            # Process the player's input
-            if userInput in ["help", "h"]:
-                Help()
-            elif userInput in ["look", "l"]:
-                Challenge(currentRoom, playerCharacter, startTimer)
-            elif userInput in ["stats", "s"]:
-                playerCharacter.PlayerStats()
-                PressEnterToContinue()
-            elif userInput in ["use item", "u"]:
-                playerCharacter.UseItem()
-            elif userInput in currentRoom.mDirections:
-                currentRoom = currentRoom.Navigation(userInput, playerCharacter)
-            elif userInput in ["exit", "e"]:
-                YeaOrNay("Are you Sure you want to  exit? (Y/N)")
-                break
-            # Check if the game is over after each iteration of the loop
-            gameOver(playerCharacter)
+    # Try except for error handaling, sending the user back to the main menu
+    try:
+        playerCharacter = None
+        currentRoom = None
+        startTimer = None
+        # Continue running the game until the user chooses to quit from the menu
+        while Menu():
+            # Create the player character
+            playerCharacter = CharacterCreator()
+            # Introduce the player to the game
+            Introduction(playerCharacter)
+            # Start timer
+            startTimer = time.time()
+            # Start the player in the enchanted forest room
+            currentRoom = rooms["enchantedForest"]
+            # Continue looping until the player's health reaches 0
+            while playerCharacter.mHealth >= 0:
+                # Clear the screen for each iteration of the game loop
+                Clear()
+                # Display the description of the current room
+                currentRoom.DisplayLocationDescription()
+                # Prompt the player to input a userInput
+                userInput = input(f"\nType one of the following userInputs:\n\nChange room: {currentRoom.mDirections}\n\nL: Look\n\nS: Stats\n\nU: Use item\n\nH: Help\n\nE: Save/Exit\n\n>").lower()
+                # Process the player's input
+                if userInput in ["help", "h"]:
+                    Help()
+                elif userInput in ["look", "l"]:
+                    Challenge(currentRoom, playerCharacter, startTimer)
+                elif userInput in ["stats", "s"]:
+                    playerCharacter.PlayerStats()
+                    PressEnterToContinue()
+                elif userInput in ["use item", "u"]:
+                    playerCharacter.UseItem()
+                elif userInput in currentRoom.mDirections:
+                    currentRoom = currentRoom.Navigation(userInput, playerCharacter)
+                elif userInput in ["exit", "e", "save", "save game", "save and exit"]:
+                    YeaOrNay("Are you Sure you want to  exit? (Y/N)")
+                    break
+                else:
+                    print(f"{userInput} is not on of the options, please try again.")
+                    PressEnterToContinue()
+                # Check if the game is over after each loop
+                GameOver(playerCharacter)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        PressEnterToContinue()
+        main()
 if __name__ == "__main__":
     main()
-
-
-    
