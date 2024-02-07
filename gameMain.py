@@ -137,7 +137,7 @@ class CRoom:
         self.AskiiArt()
         print(f"\n{border}\nLocation: {self.mLocation}\n{border}\n{self.mDescription}\n{border}")
         # Check if the challenge in the room has been completed
-        if self.mChallenge["completed"]:
+        if self.mChallenge == True:
             print(f"Challenge completed{border}")
         else:
             print(f"Challenge not completed{border}")
@@ -145,7 +145,7 @@ class CRoom:
     # Navigate rooms
     def Navigation(self, direction, playerCharacter):
     # Checks if the rooms challenge has been completed
-        if self.mChallenge and not self.mChallenge["completed"]:
+        if self.mChallenge == False:
             print("NEB: You've got to complete my challenge before moving on.")
             PressEnterToContinue()
             return self
@@ -176,7 +176,7 @@ rooms = {
         "\nleaves. You see footsteps that only lead into the castle but none that lead away;"
         "\n not all of the footsteps are human.",
         directions = {"west": "frozenStoneGarden"},
-        challenge = {"completed": False},
+        challenge = False,
         item = "Enchanted Rune",
         firstLine = 216,
         lastLine = 238),
@@ -189,7 +189,7 @@ rooms = {
         "\nyou see a familia face, a mystical nome called Neb. they say when nomes die they tend"
         "\nto haunt the surrounding area, best be carful.",
         directions = {"north": "floodedAlcemyRoom", "east": "enchantedForest", "south": "magicalLibariy", "west": "hiddenRituralSite"},
-        challenge = {"completed": False},
+        challenge = False,
         item = "Ice Rune",
         firstLine = 238,
         lastLine = 275),
@@ -201,7 +201,7 @@ rooms = {
         "\nenvironment into a mesmerizing yet mysterious spectacle. The mixture of diverse chemicals"
         "\nbeneath contributes to a uniquely vibrant and alluring atmosphere.",
         directions = {"south": "frozenStoneGarden"},
-        challenge = {"completed": False},
+        challenge = False,
         item = "Liqued Rune",
         firstLine = 275,
         lastLine = 293),
@@ -214,7 +214,7 @@ rooms = {
         "\nspectacle captures the essence of an unending cycle, where knowledge and stories take flight"
         "\nonly to return and continue their enchanting journey.",
         directions = {"north": "frozenStoneGarden"},
-        challenge = {"completed": False},
+        challenge = False,
         item = "Magic Rune",
         firstLine = 293,
         lastLine = 324),
@@ -226,7 +226,7 @@ rooms = {
         "\npromising both challenges and profound revelations within the mysterious heart of this"
         "\nconcealed sanctuary.",
         directions = {"east": "frozenStoneGarden"},
-        challenge = {"completed": False},
+        challenge = False,
         item = "boss key",
         firstLine = 324,
         lastLine = 355)}
@@ -352,28 +352,26 @@ def CharacterCreator():
             
 # Main menu to help navigate the start of the game
 def Menu():
-    # Infinite loop to continuously display the menu until a valid choice is made
     while True:
-        # Clears the console screen
         Clear()
-        # Prints decorative ASCII art from a file
 
+        # Print ASCII art
         with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[0:29]:
                 print(line.rstrip())
-        # Prints the main menu options
+
+        # Print main menu options
         print(f"{border}\n\t\t\tThe Hero of Umaros and the Giant Behemoth\n{border}"
               "1. New Game\n"
               "2. Load Game (Not Working)\n"
               "3. Leader Board\n"
               "4. Help\n"
-              f"5. Quit{border}")
-        # Prompts the player to enter their choice
+              f"5. Quit\n{border}")
+        # Prompt user for input
         userInput = input("Type thy choice:\n\n> ").lower()
-        # Checks the player's input and performs corresponding actions
+        # Handle user input
         if userInput in ["1", "one", "new game"]:
-            # Create the player character and satrts the game
-            originalRooms = rooms
+            originalRooms = rooms.copy()
             copiedRooms = originalRooms.copy()
             playerCharacter = CharacterCreator()
             Introduction(playerCharacter)
@@ -381,20 +379,19 @@ def Menu():
             currentRoom = copiedRooms["enchantedForest"]
             return playerCharacter, currentRoom, startTimer
         elif userInput in ["2", "two", "load game"]:
-            # Loads a saved game
             # LoadGame()
             return None
         elif userInput in ["3", "three", "leader board"]:
-            # Displays the leaderboard by reading scores from a file
             DisplayLeaderBoard()
         elif userInput in ["4", "four", "help", "h"]:
-            # Displays the help menu
             Help()
         elif userInput in ["5", "five", "quit", "q"]:
-            # Quits the game
             QuitGame()
-            # Returns None to indicate not starting a new game
             return None
+        else:
+            print("Invalid choice. Please enter a valid option.")
+            PressEnterToContinue()  # You might want to define this function if not done already.
+
 
 # Allows the player to exit the game
 def QuitGame():
@@ -559,7 +556,7 @@ def Combat(playerCharacter, currentRoom, startTimer):
 # Selects the challenge between riddle and combat, as well as if the room is the boss room
 def Challenge(currentRoom, playerCharacter, startTimer):
     # Check if there is an uncompleted challenge in the current room
-    if currentRoom.mChallenge and not currentRoom.mChallenge["completed"]:
+    if currentRoom.mChallenge == False:
         # Display a message indicating a challenge awaits in the current room
         Clear()
         print(f"{border}\nA challenge in {currentRoom.mLocation} awaits you.\n{border}")
@@ -575,7 +572,7 @@ def Challenge(currentRoom, playerCharacter, startTimer):
         # Add the key obtained from the challenge to the player's key inventory
         playerCharacter.mKeys.append(currentRoom.mItem)
         # Mark the challenge as completed
-        currentRoom.mChallenge["completed"] = True
+        currentRoom.mChallenge = True
     else:
         # Display a message if the challenge in the current room has already been completed
         print(f"The challenge in {currentRoom.mLocation} has already been completed.")
@@ -584,7 +581,7 @@ def Challenge(currentRoom, playerCharacter, startTimer):
 def RandomEnemySelector(currentRoom):
     randomEnemy = random.randint(1,4)
     # Checks if boss room then returns boss else you get a random enemy
-    if currentRoom.mLocation == "Hidden Ritural Site" and currentRoom.mChallenge["completed"] == False:
+    if currentRoom.mLocation == "Hidden Ritural Site" and currentRoom.mChallenge == False:
         enemy = CCharacter("Behemoth", None, 100, None, 30, 0.3, None, 500, 1, 29)
     elif randomEnemy == 1:
         enemy = CCharacter("Gobblin", None, 40, None, 12, 0.10, None, 100, 162, 184)
@@ -663,7 +660,7 @@ def Riddle(playerCharacter):
 def main():
     # Try except for error handaling, sending the user back to the main menu
     while True:
-        try:
+        #try:
             playerCharacter = None
             currentRoom = None
             startTimer = None
@@ -700,8 +697,8 @@ def main():
                     PressEnterToContinue()
                 # Check if the game is over after each loop
                 GameOver(playerCharacter)
-        except Exception as e:
-            print(f"An error occurred: {e}")
+        #except Exception as e:
+            #print(f"An error occurred: {e}")
             PressEnterToContinue()
             main()
 if __name__ == "__main__":
