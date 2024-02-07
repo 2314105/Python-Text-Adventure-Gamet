@@ -357,6 +357,7 @@ def Menu():
         # Clears the console screen
         Clear()
         # Prints decorative ASCII art from a file
+
         with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[0:29]:
                 print(line.rstrip())
@@ -371,23 +372,29 @@ def Menu():
         userInput = input("Type thy choice:\n\n> ").lower()
         # Checks the player's input and performs corresponding actions
         if userInput in ["1", "one", "new game"]:
-            # Returns True to indicate starting a new game
-            return True
+            # Create the player character and satrts the game
+            originalRooms = rooms
+            copiedRooms = originalRooms.copy()
+            playerCharacter = CharacterCreator()
+            Introduction(playerCharacter)
+            startTimer = time.time()
+            currentRoom = copiedRooms["enchantedForest"]
+            return playerCharacter, currentRoom, startTimer
         elif userInput in ["2", "two", "load game"]:
             # Loads a saved game
-           # LoadGame()
-            return False
+            # LoadGame()
+            return None
         elif userInput in ["3", "three", "leader board"]:
             # Displays the leaderboard by reading scores from a file
             DisplayLeaderBoard()
-        elif userInput == "4" or userInput == "help" or userInput == "four" or userInput == "h":
+        elif userInput in ["4", "four", "help", "h"]:
             # Displays the help menu
             Help()
-        elif userInput == "5" or userInput == "quit" or userInput == "five" or userInput == "q":
+        elif userInput in ["5", "five", "quit", "q"]:
             # Quits the game
             QuitGame()
-            # Returns False to indicate not starting a new game
-            return False
+            # Returns None to indicate not starting a new game
+            return None
 
 # Allows the player to exit the game
 def QuitGame():
@@ -457,16 +464,9 @@ def YouWin(playerCharacter, startTimer):
                 print(line.rstrip())
     # Prints congratulations message with player's name and overall score
     print(f"\n{border}\nCongratulations {playerCharacter.mName} You've WON!!!\n{border}\n Here is your overall Score: {playerCharacter.mScore} Time: {timeScore}\n\n would you like to play again?\n\n")
+
     PressEnterToContinue()
     # Prompts the player to choose whether to play again or not
-    userInput = YeaOrNay("Yae/Nay: \n\n>")
-    # If the player chooses to play again, returns to the main menu
-    if userInput:
-        Menu()
-        return True
-    # If the player chooses not to play again, exits the game
-    else:
-        QuitGame()
 
 # Calls current room and displays information with UI
 def DisplayRoomInformation(currentRoom):
@@ -523,6 +523,7 @@ def Combat(playerCharacter, currentRoom, startTimer):
                 elif enemy.mHealth <= 0 and enemy.mName == "Behemoth":
                     # Player wins if the defeated enemy is the boss
                     YouWin(playerCharacter, startTimer)
+                    break
                 else:
                     # Enemy defeated adds loot to player inventory
                     lootDropped = Loot(playerCharacter)
@@ -661,22 +662,18 @@ def Riddle(playerCharacter):
 # Main function to run the game
 def main():
     # Try except for error handaling, sending the user back to the main menu
-    try:
-        playerCharacter = None
-        currentRoom = None
-        startTimer = None
-        # Continue running the game until the user chooses to quit from the menu
-        while Menu():
-            # Create the player character
-            playerCharacter = CharacterCreator()
-            # Introduce the player to the game
-            Introduction(playerCharacter)
-            # Start timer
-            startTimer = time.time()
-            # Start the player in the enchanted forest room
-            currentRoom = rooms["enchantedForest"]
+    while True:
+        try:
+            playerCharacter = None
+            currentRoom = None
+            startTimer = None
+            # Continue running the game until the user chooses to quit from the menu
+            playerCharacter, currentRoom, startTimer = Menu()
             # Continue looping until the player's health reaches 0
             while playerCharacter.mHealth >= 0:
+                # Check if the player has all 5 keys and is in the boss room to end the game
+                if currentRoom.mLocation == "Hidden Ritural Site" and len(playerCharacter.mKeys) == 5:
+                    break
                 # Clear the screen for each iteration of the game loop
                 Clear()
                 # Display the description of the current room
@@ -703,9 +700,9 @@ def main():
                     PressEnterToContinue()
                 # Check if the game is over after each loop
                 GameOver(playerCharacter)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        PressEnterToContinue()
-        main()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            PressEnterToContinue()
+            main()
 if __name__ == "__main__":
     main()
