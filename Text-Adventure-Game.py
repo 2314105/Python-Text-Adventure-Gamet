@@ -1,10 +1,11 @@
-#Import librarys
+# Import librarys
 import os
 import random
 import time
 
-#Character class
+# Character class
 class CCharacter:
+    
     # Initialize character attributes
     mName = ""
     mHero = "" 
@@ -29,14 +30,14 @@ class CCharacter:
         self.mScore = score
         self.mFirstLine = firstLine
         self.mLastLine = lastLine
-
+        
     # Calls Askii art from text file and displays art based on the lines from the constructors
     def AskiiArt(self):
         with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[self.mFirstLine-1:self.mLastLine-1]:
                 print(line.rstrip())
 
-    #Displays players stats
+    # Displays players stats
     def PlayerStats(self):
         Clear()
         self.mDefence = round(self.mDefence,2)
@@ -50,13 +51,14 @@ class CCharacter:
               f"Inventory:_____ {self.mInventory}"
               f"\nKeys:__________ {self.mKeys}{border}")
         
-    #Adds items to inventory
+    # Adds items to inventory
     def AddToInventory(self, item):
         self.mInventory.append(item)
         print(f"{item} added to inventory.")
 
     # Uses item from inventory, adds it to stats, and removes it from list
     def UseItem(self):
+        
         # Initialize potion effects
         healthEffect = 30
         damageEffect = 15
@@ -64,35 +66,29 @@ class CCharacter:
         boosterHealthEffect = 5
         boosterDamageEffect = 5
         boosterDefenceEffect = 0.05
-
         Clear()
+        
         # Prompt the player to choose an item from their inventory
         userInput = input(f"\n{border}\nWhat item would you like to use\n{border}\nInventory: {self.mInventory}\n{border}\n>").lower()
         if userInput in ["health", "health potion", "h"]:
-            # Check if the player has a health potion in their inventory
+            
+            # Check if the player has a health potion in their inventory apply health effect, remove the item from inventory, and inform the player
             if "health potion" in self.mInventory:
-                # Apply health effect, remove the item from inventory, and inform the player
                 self.mHealth += healthEffect
                 self.mInventory.remove("health potion")
                 print("Your health has increased by 30 points")
         elif userInput in ["damage", "damage potion", "d"]:
-            # Check if the player has a damage potion in their inventory
             if "damage potion" in self.mInventory:
-                # Apply damage effect, remove the item from inventory, and inform the player
                 self.mDamage += damageEffect
                 self.mInventory.remove("damage potion")
                 print("Your physical damage has increased by 15 points")
         elif userInput in ["protection", "protection potion", "p"]:
-            # Check if the player has a protection potion in their inventory
             if "protection potion" in self.mInventory:
-                # Apply defence effect, remove the item from inventory, and inform the player
                 self.mDefence += defenceEffect
                 self.mInventory.remove("protection potion")
                 print("Your protection has increased by 0.1%")
         elif userInput in ["boost","booster", "booster potion", "b"]:
-            # Check if the player has a booster potion in their inventory
             if "booster potion" in self.mInventory:
-                # Apply all stats boosting effects, remove the item from inventory, and inform the player
                 self.mDefence += boosterDefenceEffect
                 self.mDamage += boosterDamageEffect
                 self.mHealth += boosterHealthEffect
@@ -105,6 +101,7 @@ class CCharacter:
 
 # Rooms class
 class CRoom:
+    
     #Initilize room attributes
     mLocation = ""
     mDescription = ""
@@ -124,12 +121,10 @@ class CRoom:
         self.mFirstLine = firstLine
         self.mLastLine = lastLine
         
+    # Calls Askii art from text file and displays art based on the lines from the constructors
     def AskiiArt(self):
-    # Open the file containing ASCII art
         with open('AskiiArt.txt', 'r') as artFile:
-            # Iterate through the lines corresponding to the ASCII art for the current room
             for line in artFile.readlines()[self.mFirstLine-1:self.mLastLine-1]:
-                # Print each line of ASCII art, removing any trailing whitespace
                 print(line.rstrip())
 
     # Displays the current rooms description
@@ -137,7 +132,7 @@ class CRoom:
         self.AskiiArt()
         print(f"\n{border}\nLocation: {self.mLocation}\n{border}\n{self.mDescription}\n{border}")
         # Check if the challenge in the room has been completed
-        if self.mChallenge == True:
+        if "completed" in self.mChallenge and self.mChallenge["completed"]:
             print(f"Challenge completed{border}")
         else:
             print(f"Challenge not completed{border}")
@@ -145,7 +140,7 @@ class CRoom:
     # Navigate rooms
     def Navigation(self, direction, playerCharacter):
     # Checks if the rooms challenge has been completed
-        if self.mChallenge == False:
+        if self.mChallenge and not self.mChallenge["completed"]:
             print("NEB: You've got to complete my challenge before moving on.")
             PressEnterToContinue()
             return self
@@ -176,7 +171,7 @@ rooms = {
         "\nleaves. You see footsteps that only lead into the castle but none that lead away;"
         "\n not all of the footsteps are human.",
         directions = {"west": "frozenStoneGarden"},
-        challenge = False,
+        challenge = {"completed": False},
         item = "Enchanted Rune",
         firstLine = 216,
         lastLine = 238),
@@ -189,7 +184,7 @@ rooms = {
         "\nyou see a familia face, a mystical nome called Neb. they say when nomes die they tend"
         "\nto haunt the surrounding area, best be carful.",
         directions = {"north": "floodedAlcemyRoom", "east": "enchantedForest", "south": "magicalLibariy", "west": "hiddenRituralSite"},
-        challenge = False,
+        challenge = {"completed": False},
         item = "Ice Rune",
         firstLine = 238,
         lastLine = 275),
@@ -201,7 +196,7 @@ rooms = {
         "\nenvironment into a mesmerizing yet mysterious spectacle. The mixture of diverse chemicals"
         "\nbeneath contributes to a uniquely vibrant and alluring atmosphere.",
         directions = {"south": "frozenStoneGarden"},
-        challenge = False,
+        challenge = {"completed": False},
         item = "Liqued Rune",
         firstLine = 275,
         lastLine = 293),
@@ -214,7 +209,7 @@ rooms = {
         "\nspectacle captures the essence of an unending cycle, where knowledge and stories take flight"
         "\nonly to return and continue their enchanting journey.",
         directions = {"north": "frozenStoneGarden"},
-        challenge = False,
+        challenge = {"completed": False},
         item = "Magic Rune",
         firstLine = 293,
         lastLine = 324),
@@ -226,7 +221,7 @@ rooms = {
         "\npromising both challenges and profound revelations within the mysterious heart of this"
         "\nconcealed sanctuary.",
         directions = {"east": "frozenStoneGarden"},
-        challenge = False,
+        challenge = {"completed": False},
         item = "boss key",
         firstLine = 324,
         lastLine = 355)}
@@ -265,51 +260,43 @@ def PressEnterToContinue():
     input("press enter to continue ...")
     Clear()
 
-# Yes or no question
+# Yes or no question to return eigther True or False
 def YeaOrNay(prompt):
-    # Loop until valid input is provided
     while True:
-        # Prompts the user with the provided prompt
         userInput = input(prompt).lower()
-        # Checks if the input is affirmative
         if userInput in ["yes", "y", "yea"]:
             return True
-        # Checks if the input is negative
         elif userInput in ["no", "n", "nay"]:
             return False
         else:
-            # Prompts the user to enter a valid input
             print("Invalid input. Please enter Yea or Nay.")
 
-# Displays game over screen
-def GameOver(playerCharacter):
-    # Checks if the player's health is below 1
+# Displays game over screen depending on the players health or if the behemoth has been defeated
+def GameOver(playerCharacter, behemothDefeated, startTimer):
     if playerCharacter.mHealth < 1:
-        # Waits for player confirmation
         PressEnterToContinue()
         print(border)
-        # Displays game over ASCII art
+        
+        # Opens a file containing ASCII art and prints game over
         with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[201:208]:
                 print(line.rstrip())
-        # Displays player score
         print(f"{border}Score = {playerCharacter.mScore}{border}")
         print("\nTry Again?\n\n")
-        # Asks the player if they want to play again
         userInput = YeaOrNay("Yae/Nay: \n\n>")
         if userInput:
-            return True
+            return False
         else:
-            # Quits the game if the player chooses not to play again
             QuitGame()
-
-# Gets players name and makes sure its not too long or too short
+            return True
+    elif behemothDefeated == True:
+        return YouWin(playerCharacter, startTimer)
+        
+# Gets players name and makes sure its not too long or too short and capitalizes it
 def CharacterName():
     while True:
         Clear()
-        # Caparilizes the first letter
         name = input(f"{border}\nTell me Hero, What is thy Name? (3 and 10 characters)\n{border}\n\n>").capitalize()
-        # Makes sure the name isnt to long or too short
         if 3 <= len(name) <= 10:
             confirmName = YeaOrNay(f"{border} Is {name} your Name Yae/Nay: \n\n")
             if confirmName:
@@ -352,52 +339,46 @@ def CharacterCreator():
             
 # Main menu to help navigate the start of the game
 def Menu():
+    # Infinite loop to continuously display the menu until a valid choice is made
     while True:
         Clear()
-
-        # Print ASCII art
+        
+        # Prints ASCII art
         with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[0:29]:
                 print(line.rstrip())
-
-        # Print main menu options
+                
+        # Prints the main menu options
         print(f"{border}\n\t\t\tThe Hero of Umaros and the Giant Behemoth\n{border}"
-              "1. New Game\n"
-              "2. Load Game (Not Working)\n"
-              "3. Leader Board\n"
-              "4. Help\n"
-              f"5. Quit\n{border}")
-        # Prompt user for input
+              "1. Start Game\n"
+              "2. Leader Board\n"
+              "3. Help\n"
+              f"4. Quit{border}")
+        # Prompts the player to enter their choice
         userInput = input("Type thy choice:\n\n> ").lower()
-        # Handle user input
-        if userInput in ["1", "one", "new game"]:
-            originalRooms = rooms.copy()
-            copiedRooms = originalRooms.copy()
+        # Checks the player's input and performs corresponding actions
+        if userInput in ["1", "one", "start game", "start"]:
+            # Create the player character
             playerCharacter = CharacterCreator()
+            currentRoom = rooms["enchantedForest"]
             Introduction(playerCharacter)
-            startTimer = time.time()
-            currentRoom = copiedRooms["enchantedForest"]
-            return playerCharacter, currentRoom, startTimer
-        elif userInput in ["2", "two", "load game"]:
-            # LoadGame()
-            return None
-        elif userInput in ["3", "three", "leader board"]:
+            return playerCharacter , currentRoom
+        elif userInput in ["2", "two", "leader board"]:
+            # Displays the leaderboard by reading scores from a file
             DisplayLeaderBoard()
-        elif userInput in ["4", "four", "help", "h"]:
+        elif userInput in["3", "three", "help"]:
+            # Displays the help menu
             Help()
-        elif userInput in ["5", "five", "quit", "q"]:
+        elif userInput in ["4", "four", "quit"]:
+            # Quits the game
             QuitGame()
-            return None
-        else:
-            print("Invalid choice. Please enter a valid option.")
-            PressEnterToContinue()  # You might want to define this function if not done already.
-
+            # Returns False to indicate not starting a new game
+            return False
 
 # Allows the player to exit the game
 def QuitGame():
     Clear()
     print("Farewell, brave adventurer! Until we meet again.")
-    return "quit"
 
 # Allows the player to recieve additional help
 def Help():
@@ -407,63 +388,67 @@ def Help():
     "\n\nCombat:\n-Type: attack, a or just pressing enter will allow you to attack quickly\n-Running away will give the enemy a chance to to get a hit in\n-Type: U or use item to use oneof te potion in your invenory"
     "\n\nRiddle:\n-Type: tip or t will give you a hint for the riddle"
     "\n\nBoth challange situations you can forfeit, but you wont gain any score."
-    "\n\nPotions:\n-Potions can be used by using the 'use item' function, from there type the\n potion out or type the first letter. E.G: health potion or h\n")
+    "\n\nPotions:\n-Potions can be used by using the 'use item' function, from there type the\n potion out or type the first letter. E.G:\nh => health potion\nd => damage potion\np => protection potion\nb => booster potion\n")
     PressEnterToContinue()
+
+# Save score to txt file
+def SaveScore(playerCharacter, startTimer):
+    endTimer = time.time()
+    timeScore = round(endTimer-startTimer,2)
+    with open("Score.txt", "a") as file:
+        file.write(f"{playerCharacter.mName},{playerCharacter.mScore},{timeScore}\n")
 
 # Displays the top 10 scores from the Score.txt file
 def DisplayLeaderBoard():
-    scores = []
-    Clear()
-    # Open the Score text file in read mode
-    try:
-        with open("Score.txt", "r") as file:
-            # Iterate through each line in the file
-            for line in file:
-                # Append each line to the scores list
-                scores.append(int(line))
-        # Sorts the scores in descending order
-        listLength = len(scores)
-        for i in range(listLength):
-            for j in range(0, listLength - i - 1):
-                if scores[j] < scores[j + 1]:
-                    scores[j], scores[j + 1] = scores[j + 1], scores[j]
-        # Keep only the top 10 scores)
-        topTenScores = scores[:10]
+    # Initialize arrays to store the scores
+    nameAndScore = []
+    timeScore = []
+    groupedScore = {}
+    counter = 0
+    
+    # Open file and read all lines
+    with open("Score.txt", "r") as file:
+        lines = file.readlines()
+        
+        # Loop through each line and split the data
+        for line in lines:
+            data = line.strip().split(",")
+            name = data[0]
+            time = float(data[2])
+            nameAndScore.append((name, time))
+            timeScore.append(time)
+            groupedScore[time] = [name, data[1]]
+
+        # Sorting time score using bubble sort
+        n = len(timeScore)
+        for i in range(n):
+            for j in range(0, n-i-1):
+                if timeScore[j] > timeScore[j+1]:
+                    timeScore[j], timeScore[j+1] = timeScore[j+1], timeScore[j]
+
         # Display the top 10 scores
-        print(f"{border}\nLeader Board\n{border}")
-        for i, score in enumerate(topTenScores):
-            print(f"{i + 1}. {score}")
-        print(border)
+        Clear()
+        print(f"{border}\t\t\t\t\tTop 10 Scores:{border}")
+        for i in range(min(10, len(nameAndScore))):
+            counter += 1
+            time = timeScore[i]
+            name, level = groupedScore[time]
+            print(f"\t\t\t{counter}. Name: {name}, Time: {time}, Level: {level}\n")  
+        print(border)  
         PressEnterToContinue()
-        # Write the top 10 scores back to the Score.txt file
-        with open("Score.txt", "w") as file:
-            for score in topTenScores:
-                file.write(f"{score}\n")
-    except FileNotFoundError:
-        # Display a message if the file is not found
-        print("No scores found.")
-        PressEnterToContinue()
-       
-# You win Screen 
+
+# You win Screen with ASCII art and saving score
 def YouWin(playerCharacter, startTimer):
     Clear()
     print(border)
-    # Stop timer
-    endTimer = time.time()
-    # Calculate time elapsed and rounds to 2 decimal places
-    timeScore = round(endTimer-startTimer,2)
-    # Write player's score to a file
-    with open("Score.txt", "a") as file:
-        file.write(f"{playerCharacter.mScore}\n")
+    SaveScore(playerCharacter, startTimer)
     # Opens a file containing ASCII art and prints victory
     with open('AskiiArt.txt', 'r') as artFile:
             for line in artFile.readlines()[208:215]:
                 print(line.rstrip())
-    # Prints congratulations message with player's name and overall score
-    print(f"\n{border}\nCongratulations {playerCharacter.mName} You've WON!!!\n{border}\n Here is your overall Score: {playerCharacter.mScore} Time: {timeScore}\n\n would you like to play again?\n\n")
-
     PressEnterToContinue()
-    # Prompts the player to choose whether to play again or not
+    Menu()
+    return False
 
 # Calls current room and displays information with UI
 def DisplayRoomInformation(currentRoom):
@@ -476,7 +461,7 @@ def DisplayRoomInformation(currentRoom):
     print(border)
 
 # Player vs Enemy combat
-def Combat(playerCharacter, currentRoom, startTimer):
+def Combat(playerCharacter, currentRoom):
     # Initialize userInput input variable
     userInput = ""
     # Select a random enemy for the current room
@@ -495,7 +480,6 @@ def Combat(playerCharacter, currentRoom, startTimer):
         enemy.AskiiArt()
         print (border)
         print(f"{playerCharacter.mName} {playerCharacter.mHealth} |  {enemy.mName}  {enemy.mHealth}{border}")
-        # Prompt player for action
         userInput = input(f"a: Attack\nr: Run away\nh: Help\nu: Use item\n\n>").lower()
         # Handle different player userInputs
         if userInput in ["help", "h"]:
@@ -510,17 +494,13 @@ def Combat(playerCharacter, currentRoom, startTimer):
                 # Successful attack
                 Clear()
                 enemy.AskiiArt()
+                print (border)
                 enemy.mHealth -= (playerCharacter.mDamage + randomDamage)
                 print(f"Successful strike! Enemy health is now {enemy.mHealth}")
                 if enemy.mHealth > 0:
                     # Enemy attacks if still alive
                     playerCharacter.mHealth -= round((enemy.mDamage + randomDamage) * playerCharacter.mDefence)
                     print(f"{enemy.mName} takes a swing and hits you. You now have {playerCharacter.mHealth} health.")
-                    GameOver(playerCharacter)
-                elif enemy.mHealth <= 0 and enemy.mName == "Behemoth":
-                    # Player wins if the defeated enemy is the boss
-                    YouWin(playerCharacter, startTimer)
-                    break
                 else:
                     # Enemy defeated adds loot to player inventory
                     lootDropped = Loot(playerCharacter)
@@ -531,57 +511,61 @@ def Combat(playerCharacter, currentRoom, startTimer):
             else:
                 # Player misses the attack, leaving an opening for a counter-attack
                 Clear()
+                enemy.AskiiArt()
+                print (border)
                 print(f"You miss the {enemy.mName}, leaving an opening for a counter-attack.")
                 playerCharacter.mHealth -= (enemy.mDamage + randomDamage)
                 print(f"{enemy.mName} lands a full damage hit, ignoring your defense. Current health is {playerCharacter.mHealth}.")
-                GameOver(playerCharacter)
+                if playerCharacter.mHealth < 1:
+                    break
         elif userInput in ["run away", "r"]:
             # Player attempts to run away
             Clear()
+            enemy.AskiiArt()
+            print (border)
             print(f"Neb: What you cant beat the {enemy.mName}, fine i'll open the gate, be carful though.")
             hitChance = random.randint(0, 10)
             if hitChance > 3 or enemy.mName == "Behemoth":
                 # Successful escape
-                print("Neb: You managed to escape, welldone I guess, heres the key.")
+                print("Neb: You managed to escape, well done I guess, heres the key.")
                 break
             else:
                 # Failure to escape
                 print(f"You tried to escape, but the {enemy.mName} was able to catch you. Your health: {playerCharacter.mHealth}.")
                 playerCharacter.mHealth -= (enemy.mDamage + randomDamage)
-                GameOver(playerCharacter)
+                if playerCharacter.mHealth < 1:
+                    break
         else:
             # Invalid userInput
             print(f"{userInput} not recognized.")
 
 # Selects the challenge between riddle and combat, as well as if the room is the boss room
-def Challenge(currentRoom, playerCharacter, startTimer):
+def Challenge(currentRoom, playerCharacter):
     # Check if there is an uncompleted challenge in the current room
-    if currentRoom.mChallenge == False:
-        # Display a message indicating a challenge awaits in the current room
+    if currentRoom.mChallenge and not currentRoom.mChallenge["completed"]:
         Clear()
         print(f"{border}\nA challenge in {currentRoom.mLocation} awaits you.\n{border}")
         # Randomly select the type of challenge
         challengeType = random.choice(["riddle", "combat"])
-        # Handle different types of challenges based on the room and random selection
         if currentRoom.mLocation == "Hidden Ritural Site":
-            Combat(playerCharacter, currentRoom, startTimer)
+            Combat(playerCharacter, currentRoom)
+            return True
         elif challengeType == "riddle": 
             Riddle(playerCharacter)
         elif challengeType == "combat":
-            Combat(playerCharacter, currentRoom, startTimer)
+            Combat(playerCharacter, currentRoom)
         # Add the key obtained from the challenge to the player's key inventory
         playerCharacter.mKeys.append(currentRoom.mItem)
         # Mark the challenge as completed
-        currentRoom.mChallenge = True
+        currentRoom.mChallenge["completed"] = True
     else:
-        # Display a message if the challenge in the current room has already been completed
         print(f"The challenge in {currentRoom.mLocation} has already been completed.")
 
 # Random enemy generator
 def RandomEnemySelector(currentRoom):
     randomEnemy = random.randint(1,4)
     # Checks if boss room then returns boss else you get a random enemy
-    if currentRoom.mLocation == "Hidden Ritural Site" and currentRoom.mChallenge == False:
+    if currentRoom.mLocation == "Hidden Ritural Site" and currentRoom.mChallenge["completed"] == False:
         enemy = CCharacter("Behemoth", None, 100, None, 30, 0.3, None, 500, 1, 29)
     elif randomEnemy == 1:
         enemy = CCharacter("Gobblin", None, 40, None, 12, 0.10, None, 100, 162, 184)
@@ -602,15 +586,12 @@ def Loot(playerCharacter):
     lootDropped = loot[lootChance]
     # Adds the loot to the player's inventory
     playerCharacter.AddToInventory(lootDropped)
-    # Returns the name of the loot dropped
     return lootDropped
 
 # Selects a random riddle
 def RandomRiddleSelector():
-    # Select a random number between 1 and 4
     randomRiddle = random.randint(1, 4)
     if randomRiddle == 1:
-        # Create a riddle object with the specified question, possible answers, and additional details
         riddle = CCharacter("What can't speak, but will speak\n when spoken to?", ["echo", "an echo"], None, None, "I bounce off the walls", None, None, 120, 184, 202)
         return riddle
     elif randomRiddle == 2:
@@ -632,10 +613,8 @@ def Riddle(playerCharacter):
     # Continue looping until the player answers the riddle correctly or chooses to leave
     while userInput != riddle.mHero:
         PressEnterToContinue()
-        # Display the riddle
         riddle.AskiiArt()
         print(f"{border}you hear an annoying voice...{border}NEB: if you want the key riddle me this: {riddle.mName}")
-        # Prompt the player for an answer
         userInput = input("What is your answer?\n\nh: help\n\nt: tip\n\nl: leave\n\n>").lower()
         if userInput in ["help", "h"]:
             Help()
@@ -648,40 +627,43 @@ def Riddle(playerCharacter):
             # Display a tip to help the player solve the riddle
             print(f"Struggling? Here's a tip: \n\n>{riddle.mDamage}\n")
         elif userInput in["leave", "l"]:
-            # Display a message if the player chooses to leave the riddle
             print("Neb: Couldnt handle the riddle... fine i'll let you out, here's the key but you're not getting any points.")
             PressEnterToContinue()
             break
         else:
-            # Display an incorrect answer message if the player's input is not recognized
             print(f"{userInput} incorrect..Try again\n")
-    
+            
+# Resets the challenge in each room
+def ResetRooms():
+    for room in rooms:
+        rooms[room].mChallenge["completed"] = False
+            
 # Main function to run the game
 def main():
     # Try except for error handaling, sending the user back to the main menu
-    while True:
-        #try:
+    try:
+        # Continue running the game until the user chooses to quit from the menu
+        while True:
             playerCharacter = None
             currentRoom = None
             startTimer = None
-            # Continue running the game until the user chooses to quit from the menu
-            playerCharacter, currentRoom, startTimer = Menu()
+            playerCharacter, currentRoom = Menu()
+            startTimer = time.time()
+            behemothDefeated = False
+            ResetRooms()
             # Continue looping until the player's health reaches 0
             while playerCharacter.mHealth >= 0:
-                # Check if the player has all 5 keys and is in the boss room to end the game
-                if currentRoom.mLocation == "Hidden Ritural Site" and len(playerCharacter.mKeys) == 5:
-                    break
                 # Clear the screen for each iteration of the game loop
                 Clear()
                 # Display the description of the current room
                 currentRoom.DisplayLocationDescription()
                 # Prompt the player to input a userInput
-                userInput = input(f"\nType one of the following userInputs:\n\nChange room: {currentRoom.mDirections}\n\nL: Look\n\nS: Stats\n\nU: Use item\n\nH: Help\n\nE: Save/Exit\n\n>").lower()
+                userInput = input(f"\nType one of the following userInputs:\n\nChange room: {currentRoom.mDirections}\n\nL: Look\n\nS: Stats\n\nU: Use item\n\nH: Help\n\nE: Exit\n\n>").lower()
                 # Process the player's input
                 if userInput in ["help", "h"]:
                     Help()
                 elif userInput in ["look", "l"]:
-                    Challenge(currentRoom, playerCharacter, startTimer)
+                    behemothDefeated = Challenge(currentRoom, playerCharacter)
                 elif userInput in ["stats", "s"]:
                     playerCharacter.PlayerStats()
                     PressEnterToContinue()
@@ -689,17 +671,19 @@ def main():
                     playerCharacter.UseItem()
                 elif userInput in currentRoom.mDirections:
                     currentRoom = currentRoom.Navigation(userInput, playerCharacter)
-                elif userInput in ["exit", "e", "save", "save game", "save and exit"]:
+                elif userInput in ["exit", "e",]:
                     YeaOrNay("Are you Sure you want to  exit? (Y/N)")
                     break
                 else:
                     print(f"{userInput} is not on of the options, please try again.")
                     PressEnterToContinue()
                 # Check if the game is over after each loop
-                GameOver(playerCharacter)
-        #except Exception as e:
-            #print(f"An error occurred: {e}")
-            PressEnterToContinue()
-            main()
+                isGameOver = GameOver(playerCharacter, behemothDefeated, startTimer)
+                if isGameOver == False:
+                    break
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        PressEnterToContinue()
+        main()
 if __name__ == "__main__":
     main()
